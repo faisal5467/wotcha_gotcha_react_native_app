@@ -10,6 +10,7 @@ import {
   Text,
   View,
   SectionList,
+  Dimensions
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -32,6 +33,7 @@ import Add from "../../../assets/svg/AddMainScreen.svg";
 import { base_url } from "../../../../../baseUrl";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import Swiper from "react-native-swiper";
+import Carousel from 'react-native-snap-carousel';
 const bannerAds = [
   {
     id: 1,
@@ -254,7 +256,7 @@ export default function Cinematics({  route }) {
   
   const renderVideoItem = ({ item }) => (
     // <TouchableOpacity onPress={handle_details}>
-    <TouchableOpacity onPress={() => navigation.navigate('Cinematics_details', {videoData: item})}>
+    <TouchableOpacity onPress={() => navigation.navigate('Cinematics_details', {videoData: item, identifier: false})}>
     <View style={styles.itemContainer}>
       {/* <Image source={require('../../../assets/images/img1.png')} style={styles.image} /> */}
       <Image source={{ uri: item.thumbnail }} style={styles.image} />
@@ -679,6 +681,49 @@ export default function Cinematics({  route }) {
           {/* // */}
          {/* // start of banner slider */}
          <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#FACA4E" />
+      ) : adsData.length === 0 ? (
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
+        </View>
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <View
+              key={item.id}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </View>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.86}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
+         {/* <View
           style={{
             alignItems: "center",
             height: hp(14),
@@ -718,7 +763,7 @@ export default function Cinematics({  route }) {
           </Swiper>
            )
           }
-        </View>
+        </View> */}
         {/* ////slider end */}
 
         <View style={styles.latestSearchList}>
@@ -736,7 +781,7 @@ export default function Cinematics({  route }) {
         <View
           style={{ marginTop: hp(1.5), flexDirection: "row", height: hp(16), marginBottom:30 }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate('Cinematics_details', {videoData: dataTopVideos})} style={{ width: wp(43), height: "100%", borderRadius: wp(5) }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Cinematics_details', {videoData: dataTopVideos, identifier: false})} style={{ width: wp(43), height: "100%", borderRadius: wp(5) }}>
             {dataTopVideos === 0 ? (
               <Image
                 style={{

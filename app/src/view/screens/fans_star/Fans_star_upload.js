@@ -1321,7 +1321,7 @@ export default function Fans_star_upload({ navigation }) {
 
       <CustomSnackbar
         message={"Success"}
-        messageDescription={"News Posted Successfully"}
+        messageDescription={"Content Uploaded Successfully"}
         onDismiss={dismissSnackbar} // Make sure this function is defined
         visible={snackbarVisible}
       />

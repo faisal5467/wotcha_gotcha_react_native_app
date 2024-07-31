@@ -699,6 +699,9 @@ const App = ({ navigation }) => {
         >
           <StatusBar barStyle={"dark-content"} backgroundColor={"#FACA4E"} />
           <View style={styles.mainv}>
+            <View style={{alignItems: 'center',}}>
+
+           
             <Image
               source={appImages.logo}
               style={{ width: 280, height: 80, marginTop: "5%" }}
@@ -717,6 +720,7 @@ const App = ({ navigation }) => {
               buttonStyle={{
                 height: 120, // Adjust the height of the switch button as needed
                 borderRadius: 20, // Match the borderRadius with the container's borderRadius
+                
               }}
               style={{
                 marginTop: "8%",
@@ -759,7 +763,7 @@ const App = ({ navigation }) => {
                 Let's begin by creating your account.
               </Text>
             )}
-
+ </View>
             {check == 0 ? (
               <View style={styles.v1}>
                 <TextInput

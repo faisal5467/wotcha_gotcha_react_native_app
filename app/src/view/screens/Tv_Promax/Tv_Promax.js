@@ -10,6 +10,7 @@ import {
   Text,
   View,
   SectionList,
+  Dimensions
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -31,6 +32,7 @@ import { appImages } from "../../../assets/utilities";
 import Add from "../../../assets/svg/AddMainScreen.svg";
 import { base_url } from "../../../../../baseUrl";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import Carousel from 'react-native-snap-carousel';
 import Swiper from "react-native-swiper";
 const bannerAds = [
   {
@@ -122,6 +124,37 @@ export default function Tv_Promax({  route }) {
     }
   };
 
+  const [adsData, setAdsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    if (authToken) {
+      fetchBannerConfig();
+    }
+  }, [authToken]);
+
+  const fetchBannerConfig = async () => {
+    const token = authToken;
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        base_url + "banner/getAllActiveBanners?topBanner=true",
+        // base_url + "banner/getAllBannersByUser/97",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+      // console.log("AllBanners---", result.AllBanners);
+      setAdsData(result.AllBanners);
+    } catch (error) {
+      console.error("Error AllBanners:", error);
+    }
+    setIsLoading(false);
+  };
   const fetchAllCinematicsCategory = async () => {
     //console.log("Categry in id", selectedItemId)
     const token = authToken;
@@ -369,38 +402,48 @@ export default function Tv_Promax({  route }) {
 
           {/* // */}
           <View
-          style={{
-          alignItems: 'center',
-          height: hp(14),
-          marginLeft:8,
-          marginVertical:hp(2)
-          }}
-        >
-
-          <Swiper autoplay={true} loop={true}>
-            {bannerAds.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-
-                  justifyContent: "center",
-   
-                }}
-              >
-                <Image
-                  source={banner.image}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    // resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#FACA4E" />
+      ) : adsData.length === 0 ? (
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
         </View>
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <View
+              key={item.id}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </View>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.86}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
         {/* ////slider end */}
 
         <View style={styles.latestSearchList}>

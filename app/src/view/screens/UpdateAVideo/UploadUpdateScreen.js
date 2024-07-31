@@ -823,10 +823,10 @@ export default function UploadUpdateScreen({navigation, route}) {
           </TouchableOpacity>
         </View>
 
-        <View style={{marginRight: wp(2)}}>
+        <View style={{marginRight: wp(0)}}>
           <TextInput
             mode="outlined"
-            label="Video Name"
+            label="Video"
             outlineStyle={{borderRadius: wp(3)}}
             onChangeText={text => setProfileName(text)}
             style={[styles.ti, {borderRadius: wp(10)}]}

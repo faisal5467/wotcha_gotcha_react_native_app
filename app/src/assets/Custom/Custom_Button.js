@@ -23,7 +23,12 @@ export default function Custom_Button(props) {
                 color: '#232323'
             }}
         >
-            {props.title}
+             {props.load ? (
+        <ActivityIndicator size="small" color="#fff" />
+      ) : (
+        <Text>{props.title}</Text>
+      )}
+            {/* {props.title} */}
         </Button>
     );
 }

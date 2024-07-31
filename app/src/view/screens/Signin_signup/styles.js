@@ -11,13 +11,14 @@ const STYLES = StyleSheet.create({
         borderTopRightRadius: 40,
         borderTopLeftRadius: 40,
         marginTop: '15%',
-        alignItems: 'center',
+        // alignItems: 'center',
         backgroundColor: 'white'
     },
     ti: {
-        marginHorizontal: '7%',
+        marginHorizontal: '8%',
         marginTop: '5%',
-        width: 300,
+        // width: 310,
+        width:'86%',
         backgroundColor: 'white',
         fontSize: wp(4),
         paddingLeft: '2%',
@@ -34,7 +35,7 @@ const STYLES = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         right: 35,
-        top: 31
+        top: 33
     },
     txt: {
      

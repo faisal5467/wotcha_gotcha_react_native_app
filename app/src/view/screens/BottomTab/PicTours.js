@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Text,
   View,
+  Dimensions
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import {
@@ -17,14 +18,14 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import Entypo from 'react-native-vector-icons/Entypo';
-
+import Carousel from 'react-native-snap-carousel';
 import Fontiso from 'react-native-vector-icons/Fontisto';
 import Headers from '../../../assets/Custom/Headers';
 import Approved from '../../../assets/svg/Approved';
 import Chat from '../../../assets/svg/Chat.svg';
 
 import Add from '../../../assets/svg/AddMainScreen.svg';
-
+import Swiper from "react-native-swiper";
 import {appImages} from '../../../assets/utilities';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -110,6 +111,38 @@ export default function PicTours() {
     }
   };
 
+  const [adsData, setAdsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    if (authToken){
+      fetchBannerConfig();
+    }
+    }, [authToken]);
+  
+    const fetchBannerConfig = async () => {
+      const token = authToken;
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          base_url + "banner/getAllActiveBanners?topBanner=true",
+          // base_url + "banner/getAllBannersByUser/97",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        const result = await response.json();
+        // console.log("AllBanners---", result.AllBanners);
+        setAdsData(result.AllBanners);
+      } catch (error) {
+        console.error("Error AllBanners:", error);
+      }
+      setIsLoading(false); 
+    };
+  
   const fetchCategory = async result => {
     const token = result;
 
@@ -532,21 +565,93 @@ export default function PicTours() {
         style={{
           flex: 1,
           marginTop: hp(1),
-          marginHorizontal: wp(5),
+          marginHorizontal: wp(4),
         }}>
-    <View style={styles.bannerview}>
-        <Image
-          style={{
-            width: "100%",
-            borderRadius: wp(2),
-            height: "100%",
-            resizeMode: "contain",
-          }}
-          source={{
-            uri: "https://neilpatel.com/wp-content/uploads/2021/02/ExamplesofSuccessfulBannerAdvertising.jpg",
-          }}
+
+    {/* // start of banner slider */}
+    <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#FACA4E" />
+      ) : adsData.length === 0 ? (
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
+        </View>
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <View
+              key={item.id}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </View>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
         />
-      </View>
+      )}
+    </View>
+    {/* <View
+          style={{
+            alignItems: "center",
+            height: hp(16),
+            marginLeft: 8,
+            marginVertical: hp(2),
+          }}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#FACA4E" />
+          ) : adsData.length === 0 ? (
+           <View style={styles.TopBannerView}>
+            <Text style={{ fontWeight: "bold", fontSize: hp(2.1) }}>
+                        No Top Banner
+                      </Text>
+            </View>
+          ) : (
+            <Swiper autoplay={true} loop={true}>
+              {adsData.map((banner) => (
+                <View
+                  key={banner.id}
+                  style={{
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    source={{ uri: banner?.image }}
+                    style={{
+                      height: hp(15),
+                      width: "100%",
+                      borderWidth: 1,
+                      resizeMode: "contain",
+                      borderRadius: 10,
+                    }}
+                  />
+                </View>
+              ))}
+            </Swiper>
+          )}
+        </View>  */}
 
         <Text
           style={{
@@ -963,5 +1068,10 @@ const styles = StyleSheet.create({
     borderRadius: wp(1.8),
     borderWidth: 1,
     borderColor: '#FACA4E',
+  },
+  TopBannerView:{
+    height:'100%', width:'100%', borderWidth:1, borderColor:'gray',  borderRadius: 10, flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

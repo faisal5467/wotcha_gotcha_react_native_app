@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Text,
   View,
+  Dimensions
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -31,7 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
-
+import Carousel from 'react-native-snap-carousel';
 import {useIsFocused} from '@react-navigation/native';
 import { base_url } from '../../../../../baseUrl';
 import Swiper from "react-native-swiper";
@@ -689,52 +690,55 @@ export default function Video() {
         style={{
           flex: 1,
           marginTop: hp(1),
-          marginHorizontal: wp(8),
+          marginHorizontal: wp(4),
         }}>
 
        {/* // */}
         {/* // start of banner slider */}
+
         <View
-          style={{
-            alignItems: "center",
-            height: hp(14),
-            marginLeft: 8,
-            marginVertical: hp(2),
-          }}
-        >
-            {isLoading ? (
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
         <ActivityIndicator size="large" color="#FACA4E" />
       ) : adsData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
         </View>
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <View
+              key={item.id}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </View>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
         {/* ////slider end */}
          {/* <View style={styles.bannerview}>
         <Image
@@ -817,6 +821,7 @@ export default function Video() {
                   fontFamily: "Inter-Medium",
                   color: "black",
                   fontWeight: "700",
+                  marginLeft:12
                 }}
               >
                 {dataTopVideos?.name}

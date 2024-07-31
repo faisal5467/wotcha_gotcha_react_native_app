@@ -87,7 +87,7 @@ const CustomSnackbar = ({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 22, // Display at the top of the screen
+    top: 30, // Display at the top of the screen
     left: 15,
     right: 15,
     height: hp(7.5),

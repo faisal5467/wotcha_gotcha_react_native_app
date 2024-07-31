@@ -18,8 +18,7 @@ import BookMarkSettings from '../../../assets/svg/BookmarkSettings.svg';
 import Delete from '../../../assets/svg/Delete2.svg';
 import Share from '../../../assets/svg/Share.svg';
 import Star from '../../../assets/svg/Star.svg';
-import Vector from '../../../assets/svg/Vector.svg';
-
+import ContactUsActive from '../../../assets/svg/ContactUsActive.svg';
 import Headers from '../../../assets/Custom/Headers';
 import {
   heightPercentageToDP as hp,
@@ -39,7 +38,7 @@ export default function ProfileSettings({navigation}) {
   const [userId, setUserId] = useState('');
 
   const [authToken, setAuthToken] = useState('');
-
+  const [loading, setIsLoading] = useState(false);
   useEffect(() => {
     fetchVideos();
   }, []);
@@ -314,7 +313,7 @@ export default function ProfileSettings({navigation}) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('HelpScreen')}
+        onPress={() => navigation.navigate('ContactUs')}
         style={{
           height: hp(7),
           marginTop: hp(3),
@@ -326,7 +325,7 @@ export default function ProfileSettings({navigation}) {
           borderColor: '#00000017',
         }}>
         <View style={{marginLeft: wp(5)}}>
-          <Vector width={18} height={18} />
+          <ContactUsActive width={18} height={18} />
         </View>
 
         <Text
@@ -336,7 +335,7 @@ export default function ProfileSettings({navigation}) {
             fontFamily: 'Inter-Regular',
             //fontWeight: 'bold',
           }}>
-          Help
+         Contact Us
         </Text>
       </TouchableOpacity>
 

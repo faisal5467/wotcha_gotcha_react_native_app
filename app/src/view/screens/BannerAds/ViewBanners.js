@@ -368,7 +368,7 @@ export default function ViewBanners({ navigation }) {
               style={{
                 flexDirection: "row",
                 marginTop: hp(1),
-                height: hp(2.1),
+                height: hp(2.5),
                 // alignSelf: "center",
               }}
             >
