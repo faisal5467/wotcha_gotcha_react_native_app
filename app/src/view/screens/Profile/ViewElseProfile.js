@@ -1069,7 +1069,7 @@ export default function ViewElseProfile({navigation, route}) {
       </View>
 
       <ScrollView style={{flex: 1}}>
-        <View
+      <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -1086,7 +1086,7 @@ export default function ViewElseProfile({navigation, route}) {
               }}>
               <Image
                 source={{uri: image}}
-                style={{width: '100%', height: '100%', resizeMode: 'contain'}}
+                style={{width: '100%', height: '100%', resizeMode: 'contain',  borderRadius: wp(20) / 2,}}
               />
             </View>
           ) : (

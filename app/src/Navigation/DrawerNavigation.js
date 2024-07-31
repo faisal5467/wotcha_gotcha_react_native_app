@@ -80,19 +80,15 @@ const DrawerNavigation = ({ navigation }) => {
     const navigation = useNavigation();
 
     ///// // 24.5.2024, to get the user profile drawer mein
-    // useEffect(() => {
-    //   fetchVideos();
-    // }, [isFocused]);
+    useEffect(() => {
+      // fetchVideos();
+      getUserID();
+    }, []);
 
     const fetchVideos = async () => {
-      // Simulate loading
       setLoading(true);
-
-      // Fetch data one by one
       await getUserID();
-      //await fetchUser();
       setLoading(false);
-      // Once all data is fetched, set loading to false
     };
 
     const getUserID = async () => {
@@ -104,9 +100,6 @@ const DrawerNavigation = ({ navigation }) => {
           await fetchUserId(result);
           // console.log('user token retrieved of profile:', result);
         }
-
-        /* console.log("User Id", userId);
-        console.log("authToken", authToken); */
       } catch (error) {
         // Handle errors here
         console.error("Error retrieving user ID:", error);
@@ -179,33 +172,32 @@ const DrawerNavigation = ({ navigation }) => {
           </View>
 
           <TouchableOpacity
+          onPress={()=>navigation.navigate('ViewProfile')}
             style={{
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
               // marginTop: hp(3),
               height: hp(8),
-              // backgroundColor:'red',
               marginBottom: wp(10),
             }}
           >
-            {image ? (
+            {image !== null ? (
               <View
                 style={{
-                  width: wp(15),
+                  width: wp(14),
                   marginLeft: wp(0.1),
-                  height: wp(15),
-                  borderRadius: wp(20) / 2,
+                  height: wp(14),
+                  borderRadius: wp(14) / 2,
                 }}
               >
                 <Image
-                  // source={require("../assets/images/Profile.png")}
                   source={{uri: image}}
                   style={{
                     width: "100%",
                     height: "100%",
                     resizeMode: "contain",
-                    borderRadius: wp(20) / 2,
+                    borderRadius: wp(14) / 2,
                   }}
                 />
               </View>
@@ -245,6 +237,7 @@ const DrawerNavigation = ({ navigation }) => {
               </Text>
             </View>
           </TouchableOpacity>
+
           {/* <TouchableOpacity
            onPress={() => navigation.navigate('ViewProfile')}
             style={{

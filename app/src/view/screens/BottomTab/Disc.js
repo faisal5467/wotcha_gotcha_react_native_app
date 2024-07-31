@@ -10,6 +10,7 @@ import {
   Text,
   View,
   Alert,
+  Dimensions
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {
@@ -19,13 +20,13 @@ import {
 } from 'react-native-responsive-screen';
 import Fontiso from 'react-native-vector-icons/Fontisto';
 import Entypo from 'react-native-vector-icons/Entypo';
-
+import Swiper from "react-native-swiper";
 import Headers from '../../../assets/Custom/Headers';
 import {appImages} from '../../../assets/utilities';
 import Add from '../../../assets/svg/AddMainScreen.svg';
 import Approved from '../../../assets/svg/Approved';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Carousel from 'react-native-snap-carousel';
 import Toast from 'react-native-toast-message';
 
 import NonVerified from '../../../assets/svg/NonVerified.svg';
@@ -76,7 +77,7 @@ const navigation = useNavigation()
   const [categoryDatathree, setCategoryDatathree] = useState([]);
   const [categoryDatafour, setCategoryDatafour] = useState([]);
 const [value, setValue] = useState(null)
-
+const [carouselIndex, setCarouselIndex] = useState(0);
   useEffect(() => {
     if (isFocused) {
       getUserID(); // Call the async function
@@ -88,7 +89,7 @@ const [value, setValue] = useState(null)
       const result = await AsyncStorage.getItem('authToken ');
       if (result !== null) {
         setAuthToken(result);
-        fetchData();
+        // fetchData();
         console.log('user id retrieved:', result);
       }
     } catch (error) {
@@ -100,6 +101,7 @@ const [value, setValue] = useState(null)
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (authToken){
+      fetchTopNews()
       fetchBannerConfig();
     }
     }, [authToken]);
@@ -129,61 +131,61 @@ const [value, setValue] = useState(null)
     };
   
 
-  const fetchData = async () => {
-    // console.log('Received NewsCategory of:', NewsCategory);
-    // console.log('Received Type of:', Type);
-    // /*   Toast.show({
-    //   type: 'success', // 'success', 'error', 'info', 'warning'
-    //   position: 'bottom', // 'top', 'bottom', 'center'
-    //   text1: NewsCategory.toString(),
-    //   visibilityTime: 3000, // in milliseconds
-    //   autoHide: true,
-    // }); */
+  // const fetchData = async () => {
+  //   // console.log('Received NewsCategory of:', NewsCategory);
+  //   // console.log('Received Type of:', Type);
+  //   // /*   Toast.show({
+  //   //   type: 'success', // 'success', 'error', 'info', 'warning'
+  //   //   position: 'bottom', // 'top', 'bottom', 'center'
+  //   //   text1: NewsCategory.toString(),
+  //   //   visibilityTime: 3000, // in milliseconds
+  //   //   autoHide: true,
+  //   // }); */
 
-    // // Check if 'id' exists before using it
-    // if (NewsCategory) {
-    //   console.log('Received id:', NewsCategory);
-    //   setCategoryIdNews(NewsCategory); // Uncomment this line if you want to use id to set selectedItemId
+  //   // // Check if 'id' exists before using it
+  //   // if (NewsCategory) {
+  //   //   console.log('Received id:', NewsCategory);
+  //   //   setCategoryIdNews(NewsCategory); // Uncomment this line if you want to use id to set selectedItemId
 
-    //   if (Type === 'NEWS') {
-    //     setLoading(true);
-    //     setSelectedItemId(1);
-    //     console.log('Category Id News is ', NewsCategory);
-    //     // Fetch data one by one
-    //     await fetchNews();
+  //   //   if (Type === 'NEWS') {
+  //   //     setLoading(true);
+  //   //     setSelectedItemId(1);
+  //   //     console.log('Category Id News is ', NewsCategory);
+  //   //     // Fetch data one by one
+  //   //     await fetchNews();
 
-    //     // Once all data is fetched, set loading to false
-    //     setLoading(false);
-    //   } else if (Type === 'QAFI') {
-    //     setLoading(true);
-    //     setSelectedItemId(3);
-    //     console.log('Category Id QAFI is ', NewsCategory);
-    //     // Fetch data one by one
-    //     await fetchQAFI();
+  //   //     // Once all data is fetched, set loading to false
+  //   //     setLoading(false);
+  //   //   } else if (Type === 'QAFI') {
+  //   //     setLoading(true);
+  //   //     setSelectedItemId(3);
+  //   //     console.log('Category Id QAFI is ', NewsCategory);
+  //   //     // Fetch data one by one
+  //   //     await fetchQAFI();
 
-    //     // Once all data is fetched, set loading to false
-    //     setLoading(false);
-    //   } else if (Type === 'GEBC') {
-    //     setLoading(true);
-    //     setSelectedItemId(4);
-    //     console.log('Category Id QAFI is ', NewsCategory);
-    //     // Fetch data one by one
-    //     await fetchGEBC();
+  //   //     // Once all data is fetched, set loading to false
+  //   //     setLoading(false);
+  //   //   } else if (Type === 'GEBC') {
+  //   //     setLoading(true);
+  //   //     setSelectedItemId(4);
+  //   //     console.log('Category Id QAFI is ', NewsCategory);
+  //   //     // Fetch data one by one
+  //   //     await fetchGEBC();
 
-    //     // Once all data is fetched, set loading to false
-    //     setLoading(false);
-    //   }
-    // } else {
-    //   /*  setLoading(true);
-    //   //setSelectedItemId(1)
-    //   console.log('Category Id News is ', NewsCategory);
-    //   // Fetch data one by one
-    //   await fetchNews();
+  //   //     // Once all data is fetched, set loading to false
+  //   //     setLoading(false);
+  //   //   }
+  //   // } else {
+  //   //   /*  setLoading(true);
+  //   //   //setSelectedItemId(1)
+  //   //   console.log('Category Id News is ', NewsCategory);
+  //   //   // Fetch data one by one
+  //   //   await fetchNews();
 
-    //   // Once all data is fetched, set loading to false
-    //   setLoading(false); */
-    // }
-  };
+  //   //   // Once all data is fetched, set loading to false
+  //   //   setLoading(false); */
+  //   // }
+  // };
 
   useEffect(() => {
     if (authToken && isFocused) {
@@ -412,6 +414,7 @@ const [value, setValue] = useState(null)
   const fetchTopNews = async () => {
     // console.log('Categry in id', categoryIdNews);
     // console.log('News Called');
+    setLoading(true);
     const token = authToken;
 
     try {
@@ -432,6 +435,7 @@ const [value, setValue] = useState(null)
 
       setTopNewsData(result.AllQAFI[0]); // Update the state with the fetched data
     } catch (error) {
+      setLoading(false);
       console.error('Error Trending:', error);
     }
   };
@@ -494,7 +498,7 @@ const [value, setValue] = useState(null)
 
   const fetchLetterPublicGeneral = async () => {
     setLoading(true);
-    console.log('Categry in id', categoryIdNews);
+    // console.log('Categry in id', categoryIdNews);
     const token = authToken;
 
     try {
@@ -509,7 +513,7 @@ const [value, setValue] = useState(null)
       );
 
       const result = await response.json();
-      console.log('Resultings of News', result.AllLetter);
+      // console.log('Resultings of News', result.AllLetter);
       //Alert.alert(result)
 
       setOpensLettersPublicGeneralData(result.AllLetter); // Update the state with the fetched data
@@ -535,7 +539,7 @@ const [value, setValue] = useState(null)
       );
 
       const result = await response.json();
-      console.log('Resultings of News Celebrity Data', result.AllLetter);
+      // console.log('Resultings of News Celebrity Data', result.AllLetter);
       //Alert.alert(result)
 
       setOpensLettersPublicCelebrityData(result.AllLetter); // Update the state with the fetched data
@@ -562,7 +566,7 @@ const [value, setValue] = useState(null)
       );
 
       const result = await response.json();
-      console.log('Resultings of News', result.AllLetter);
+      // console.log('Resultings of News', result.AllLetter);
       //Alert.alert(result)
 
       setOpensLettersPrivateFriendsData(result.AllLetter); // Update the state with the fetched data
@@ -587,7 +591,7 @@ const [value, setValue] = useState(null)
       );
 
       const result = await response.json();
-      console.log('Resultings of News', result.AllLetter);
+      // console.log('Resultings of News', result.AllLetter);
       //Alert.alert(result)
 
       setOpensLettersPrivateCelebrityData(result.AllLetter); // Update the state with the fetched data
@@ -604,7 +608,7 @@ const [value, setValue] = useState(null)
   //DISC
 
   const renderPublicGeneral = item => {
-    console.log('Item of general public authorities', item);
+    // console.log('Item of general public authorities', item);
     const imageUrl =
       item.images && item.images[0]
         ? item.images[0].startsWith('/fileUpload')
@@ -724,11 +728,13 @@ const [value, setValue] = useState(null)
                 marginLeft: wp(0.5),
                 height: wp(7),
                 borderRadius: wp(7) / 2,
+                alignItems:'center',
+                justifyContent:'center'
               }}>
               <MaterialCommunityIcons
-                style={{marginTop: hp(0.5)}}
+                // style={{marginTop: hp(0.5)}}
                 name={'account-circle'}
-                size={23}
+                size={24}
                 color={'#FACA4E'}
               />
               {/*  <Image
@@ -738,7 +744,9 @@ const [value, setValue] = useState(null)
             </View>
           )}
 
-          <Text
+<View style={{width:70}}>
+<Text ellipsizeMode="tail"
+                numberOfLines={1}
             style={{
               fontSize: hp(1.5),
               marginLeft: wp(0.7),
@@ -748,6 +756,8 @@ const [value, setValue] = useState(null)
             }}>
             {item.username}
           </Text>
+
+</View>
 
           <View style={{marginLeft: wp(1)}}>
             <NonVerified />
@@ -810,11 +820,13 @@ const [value, setValue] = useState(null)
                 marginLeft: wp(0.5),
                 height: wp(7),
                 borderRadius: wp(7) / 2,
+                alignItems:'center',
+                justifyContent:'center'
               }}>
               <MaterialCommunityIcons
-                style={{marginTop: hp(0.5)}}
+                // style={{marginTop: hp(0.5)}}
                 name={'account-circle'}
-                size={30}
+                size={24}
                 color={'#FACA4E'}
               />
               {/*  <Image
@@ -824,7 +836,9 @@ const [value, setValue] = useState(null)
             </View>
           )}
 
-          <Text
+<View style={{width:70}}>
+<Text ellipsizeMode="tail"
+                numberOfLines={1}
             style={{
               fontSize: hp(1.5),
               marginLeft: wp(0.7),
@@ -834,6 +848,8 @@ const [value, setValue] = useState(null)
             }}>
             {item.username}
           </Text>
+
+</View>
 
           <View style={{marginLeft: wp(1)}}>
             <NonVerified />
@@ -892,16 +908,25 @@ const [value, setValue] = useState(null)
                 marginLeft: wp(0.5),
                 height: wp(7),
                 borderRadius: wp(7) / 2,
+                alignItems:'center',
+                justifyContent:'center'
               }}>
               <MaterialCommunityIcons
-                style={{marginTop: hp(0.5)}}
+                // style={{marginTop: hp(0.5)}}
                 name={'account-circle'}
-                size={30}
+                size={24}
                 color={'#FACA4E'}
               />
+              {/*  <Image
+            source={appImages.profileImg}
+            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+          /> */}
             </View>
           )}
-          <Text
+
+<View style={{width:70}}>
+<Text ellipsizeMode="tail"
+                numberOfLines={1}
             style={{
               fontSize: hp(1.5),
               marginLeft: wp(0.7),
@@ -911,6 +936,8 @@ const [value, setValue] = useState(null)
             }}>
             {item.username}
           </Text>
+
+</View>
 
           <View style={{marginLeft: wp(1)}}>
             <NonVerified />
@@ -998,27 +1025,27 @@ const [value, setValue] = useState(null)
             // navigation.navigate('ViewAllCategories');
             // fetchLetterPublicCelebrity();
             // fetchNews();
-            fetchTopNews();
+            // fetchTopNews();
             setSelectedItemId(1);
             fetchCate()
             fetchDataForValues()
             // fetchCategoryData()
             console.log('Log screen');
           } else if (item.id === 2) {
-            fetchTopNews();
+            // fetchTopNews();
             setSelectedItemId(2);
             fetchLetterPublicGeneral();
             console.log('On Letter id', item.id);
           } else if (item.id === 3) {
             // navigation.navigate('ViewAllCategoriesQAFI');
             setSelectedItemId(3);
-            fetchTopNews();
+            // fetchTopNews();
             // fetchQAFI();
             fetchQAFIDataForValues()
           } else if (item.id === 4) {
             // navigation.navigate('ViewAllCategoriesGEBC');
             setSelectedItemId(4);
-            fetchTopNews();
+            // fetchTopNews();
             // fetchGEBC();
             fetchGEBCDataForValues()
             // fetchLetterPublicGeneral();
@@ -1040,8 +1067,12 @@ const [value, setValue] = useState(null)
       <View style={{flex: 1}}>
         <View
           style={{marginTop: hp(1.5),  marginBottom: hp(1),flexDirection: 'row', height: hp(18)}}>
-          {topNewsData === undefined || topNewsData.length === 0 ? (
-            <View
+            <TouchableOpacity onPress={() => navigation.navigate('ViewNews',{
+                News: topNewsData
+              })}>
+          {topNewsData === undefined || topNewsData.length === 0 || topNewsData.image === undefined || topNewsData.image === null || topNewsData.image === '' || topNewsData.image === '0' ? (
+         
+              <View
               //onPress={() => navigation.navigate('News')}
               style={{width: wp(35), height: '100%', borderRadius: wp(5)}}>
               <Image
@@ -1060,9 +1091,7 @@ const [value, setValue] = useState(null)
               />
             </View>
           ) : (
-            <View
-              //onPress={() => navigation.navigate('News')}
-              style={{width: wp(35), height: '100%', borderRadius: wp(5)}}>
+            <View style={{width: wp(35), height: '100%', borderRadius: wp(5)}}>
               <Image
                 style={{
                   position: 'absolute',
@@ -1079,8 +1108,9 @@ const [value, setValue] = useState(null)
                 source={{uri: topNewsData.image}}
               />
             </View>
+       
           )}
-
+     </TouchableOpacity>
           <View style={{justifyContent: 'center', flex: 1}}>
             <View
               style={{
@@ -1372,7 +1402,7 @@ const [value, setValue] = useState(null)
           style={{marginTop: hp(1.5),  marginBottom: hp(1),flexDirection: 'row', height: hp(18)}}>
           <View
             style={{marginTop: hp(1.5), flexDirection: 'row', height: hp(18)}}>
-            {topNewsData === undefined || topNewsData.length === 0 ? (
+            {topNewsData === undefined || topNewsData.length === 0 || topNewsData.image === undefined || topNewsData.image === null || topNewsData.image === '' || topNewsData.image === '0' ? (
               <View
                 //onPress={() => navigation.navigate('News')}
                 style={{width: wp(35), height: '100%', borderRadius: wp(5)}}>
@@ -1462,7 +1492,7 @@ const [value, setValue] = useState(null)
               horizontal
               data={qaficategoryData[category.label]}
               keyExtractor={item => item.qafi_id.toString()} // Ensure a unique key for each item
-              renderItem={({item}) => renderAvailableApps(item)}
+              renderItem={({item}) => renderAvailableAppsQAFI(item)}
             />
           )}
         </View>
@@ -1604,7 +1634,7 @@ const [value, setValue] = useState(null)
           style={{marginTop: hp(1.5), marginBottom: hp(1),flexDirection: 'row', height: hp(18)}}>
           <View
             style={{marginTop: hp(1.5), flexDirection: 'row', height: hp(18)}}>
-            {topNewsData === undefined || topNewsData.length === 0 ? (
+           {topNewsData === undefined || topNewsData.length === 0 || topNewsData.image === undefined || topNewsData.image === null || topNewsData.image === '' || topNewsData.image === '0' ? (
               <View
                 //onPress={() => navigation.navigate('News')}
                 style={{width: wp(35), height: '100%', borderRadius: wp(5)}}>
@@ -1692,7 +1722,7 @@ const [value, setValue] = useState(null)
               horizontal
               data={gebccategoryData[category.label]}
               keyExtractor={item => item.gebc_id.toString()} // Ensure a unique key for each item
-              renderItem={({item}) => renderAvailableApps(item)}
+              renderItem={({item}) => renderAvailableAppsGEBC(item)}
             />
           )}
         </View>
@@ -2002,49 +2032,60 @@ const [value, setValue] = useState(null)
         />
       </View>
 
-      {/* // start of banner slider */}
-      <View
-          style={{
-            alignItems: "center",
-            height: hp(14),
-            marginLeft: 8,
-            marginVertical: hp(2),
-          }}
-        >
-            {isLoading ? (
+     
+{/* {renderItemText()} */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{
+          flex: 1,
+          marginTop: hp(1),
+          marginHorizontal: wp(4),
+        }}>
+           {/* // start of banner slider */}
+           <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
         <ActivityIndicator size="large" color="#FACA4E" />
       ) : adsData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
         </View>
-
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <View
+              key={item.id}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </View>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          onSnapToItem={(index) => setCarouselIndex(index)}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
       <View style={{marginTop: hp(1), marginHorizontal: wp(8)}}>
         <Text style={{color: '#FACA4E', fontWeight: 'bold', fontSize: hp(2.3)}}>
           DISC
@@ -2062,14 +2103,6 @@ const [value, setValue] = useState(null)
           renderItem={({item}) => renderSearches(item)}
         />
       </View>
-{/* {renderItemText()} */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{
-          flex: 1,
-          marginTop: hp(1),
-          marginHorizontal: wp(8),
-        }}>
         {selectedItemId === 1 ? (
           <DiscScreen />
           
@@ -2128,7 +2161,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: hp(2.1),
     height: hp(7),
-    marginHorizontal: wp(8),
+    // marginHorizontal: wp(6),
     //marginLeft: wp(5),
     //borderWidth: 3,
   },
@@ -2154,7 +2187,7 @@ const styles = StyleSheet.create({
     marginLeft: wp(3),
     alignItems: 'center',
     justifyContent: 'center',
-    width: wp(25),
+    width: wp(26),
     backgroundColor: '#F2F2F2',
     borderRadius: wp(5),
     height: hp(5),
@@ -2185,5 +2218,10 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: hp(1.9),
     // right: "20%",
+  },
+  TopBannerView:{
+    height:'100%', width:'100%', borderWidth:1, borderColor:'gray',  borderRadius: 10, flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

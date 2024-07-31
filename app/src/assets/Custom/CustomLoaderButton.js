@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
   },
   buttonText: {
-    color: '#3F3F3F',
+    color: '#232323',
         alignSelf: 'center',
         fontSize: widthPercentageToDP(4),
         fontFamily: 'Montserrat-Medium',

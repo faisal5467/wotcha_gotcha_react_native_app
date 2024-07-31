@@ -41,8 +41,8 @@ export default function News({navigation, route}) {
   const receivedData = route.params?.News;
 
   console.log('Recieved Data News', receivedData);
-
-  var details = receivedData.description
+  const details = receivedData?.description || '';
+  // var details = receivedData.description
    // 'Hold onto your seats and get ready to be mesmerized by the beauty and grandeur of the Hold onto your seats';
 
   const toggleContent = () => {

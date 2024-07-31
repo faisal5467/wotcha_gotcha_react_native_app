@@ -118,7 +118,6 @@ export default function ViewNews({navigation, route}) {
   };
 
   const getUserID = async () => {
-    console.log("Id's");
     try {
       const result = await AsyncStorage.getItem('userId ');
       if (result !== null) {
@@ -692,7 +691,8 @@ export default function ViewNews({navigation, route}) {
 
   console.log('Data Recieved on news', receivedData);
   //news_id
-  var details = receivedData?.description;
+  // var details = receivedData?.description;
+  const details = receivedData?.description || '';
 
   const shareViaWhatsApp = async () => {
     const shareOptions = {

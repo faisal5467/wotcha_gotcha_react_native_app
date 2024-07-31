@@ -16,7 +16,8 @@ import {
 import React, {useState, useRef, useMemo, useCallback, useEffect} from 'react';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Back from '../../../assets/svg/back.svg';
-
+import EditItem from '../../../assets/svg/UpdateItem.svg';
+import Delete from '../../../assets/svg/Delete.svg';
 import {appImages} from '../../../assets/utilities/index';
 import Slider from '@react-native-community/slider';
 import VolumeUp from '../../../assets/svg/VolumeUp.svg';
@@ -70,7 +71,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 export default function Fans_star_details({navigation, route}) {
   const [showFullContent, setShowFullContent] = useState(false);
-
+  const identifier  = route.params.identifier;
   const [pastedURL, setPastedURL] = useState(
     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
   );
@@ -117,6 +118,9 @@ export default function Fans_star_details({navigation, route}) {
 
   const [commentText, setCommentText] = useState(null); // State variable to hold the text
   const refCommentsSheet = useRef();
+  const [snackbarDeleteVisible, setsnackbarDeleteVisible] = useState(false);
+  const ref_RBSheetCamera = useRef(null);
+
   useEffect(() => {
     // This code will run whenever progress state changes
     if (progress && progress.seekableDuration !== undefined) {
@@ -864,9 +868,69 @@ export default function Fans_star_details({navigation, route}) {
       .then(res => {
         // the temp file path
         console.log('The file saved to ', res.path());
-        alert('file downloaded successfully ');
+        // alert('file downloaded successfully ');
       });
   };
+
+  const changeModal = () => {
+    ref_RBSheetCamera.current.close();
+    // navigation.replace('UpdateVideoProfile', {Video: receivedData});
+    navigation.replace('UpdateContent', {Video: receivedData, apiEndpoint: 'fanStar/update'});
+  };
+
+  const changeDelete = () => {
+    ref_RBSheetCamera.current.close();
+    handleUpdateDelete();
+    //navigation.goBack()
+  };
+
+  const handleUpdateDelete = async () => {
+    const token = authToken;
+    try {
+      const response = await fetch(
+        base_url + `fanStar/delete/${receivedData?.video_id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            // Include any additional headers as needed
+          },
+          // You may include a request body if required by the server
+          // body: JSON.stringify({}),
+        },
+      );
+
+      if (response.ok) {
+        handleUpdateDeletePassword();
+        // Optionally handle the response data here
+      } else {
+        console.error(
+          `Error deleting video with ID ${receivedData?.video_id}:`,
+          response.status,
+        );
+        // Optionally handle the error response here
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle other errors such as network issues
+    }
+  };
+
+  const dismissDeleteSnackbar = () => {
+    setsnackbarDeleteVisible(false);
+  };
+  const handleUpdateDeletePassword = async () => {
+    setsnackbarDeleteVisible(true);
+
+    // Automatically hide the Snackbar after 3 seconds
+    setTimeout(() => {
+      setsnackbarDeleteVisible(false);
+      navigation.navigate('ViewProfile');
+      //navigation.goBack();
+    }, 3000);
+  };
+  //----------------------------------\\
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -923,11 +987,20 @@ export default function Fans_star_details({navigation, route}) {
             resizeMode="contain"
           />
 
-          {showMenu && (
+{identifier ? ( 
+        <TouchableOpacity
+              onPress={() => ref_RBSheetCamera.current.open()}
+              style={{marginLeft: wp(18), marginTop: hp(1)}}>
+              <Entypo name={'dots-three-vertical'} size={18} color={'white'} />
+            </TouchableOpacity>
+      ) : (
+     <View/>
+      )}
+          {/* {showMenu && (
             <TouchableOpacity style={{marginLeft: wp(18), marginTop: hp(1)}}>
               <Entypo name={'dots-three-vertical'} size={18} color={'white'} />
             </TouchableOpacity>
-          )}
+          )} */}
         </View>
 
         <View style={styles.bottomView}>
@@ -1700,6 +1773,114 @@ export default function Fans_star_details({navigation, route}) {
         }}>
         {loading && <ActivityIndicator size="large" color="#FACA4E" />}
       </View>
+
+             {/* //-----------------\\ */}
+             <RBSheet
+        ref={ref_RBSheetCamera}
+        closeOnDragDown={true}
+        closeOnPressMask={false}
+        animationType="fade"
+        minClosingHeight={0}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'rgba(52, 52, 52, 0.5)',
+          },
+          draggableIcon: {
+            backgroundColor: 'white',
+          },
+          container: {
+            borderTopLeftRadius: wp(10),
+            borderTopRightRadius: wp(10),
+            height: hp(25),
+          },
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: wp(8),
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontFamily: 'Inter-Medium',
+              color: '#303030',
+              fontSize: hp(2.3),
+            }}>
+            Select an option
+          </Text>
+          <TouchableOpacity onPress={() => ref_RBSheetCamera.current.close()}>
+            <IonIcons
+              name="close"
+              size={22}
+              color={'#303030'}
+              onPress={() => ref_RBSheetCamera.current.close()}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{
+            //flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            //alignItems: 'center',
+            //borderWidth: 3,
+            marginTop: hp(3),
+          }}>
+          <TouchableOpacity
+            onPress={() => changeModal()}
+            style={{flexDirection: 'row', marginHorizontal: wp(7)}}>
+            <EditItem height={23} width={23} />
+
+            <Text
+              style={{
+                fontFamily: 'Inter-Regular',
+                color: '#656565',
+                marginLeft: wp(3),
+                fontSize: hp(2.1),
+              }}>
+              Update Video
+            </Text>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              height: hp(0.1),
+              marginHorizontal: wp(8),
+              marginTop: hp(3),
+              backgroundColor: '#00000012',
+            }}></View>
+
+          <TouchableOpacity
+            onPress={() => changeDelete()}
+            style={{
+              flexDirection: 'row',
+              marginTop: hp(2.5),
+              marginHorizontal: wp(7),
+            }}>
+            <Delete height={23} width={23} />
+
+            <Text
+              style={{
+                fontFamily: 'Inter-Regular',
+                color: '#656565',
+                marginLeft: wp(3),
+                fontSize: hp(2.1),
+              }}>
+              Delete Video
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </RBSheet>
+
+      <CustomSnackbar
+          message={'success'}
+          messageDescription={'Video deleted successfully'}
+          onDismiss={dismissDeleteSnackbar} // Make sure this function is defined
+          visible={snackbarDeleteVisible}
+        />
+
+      {/* //-----------------------\\ */}
     </GestureHandlerRootView>
   );
 }

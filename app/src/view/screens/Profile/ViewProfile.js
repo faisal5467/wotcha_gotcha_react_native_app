@@ -94,6 +94,21 @@ export default function ViewProfile({navigation}) {
 
   const [totalGEBC, setTotalGEBC] = useState(null);
 
+  const [cinematicvideos, setCinematicVideos] = useState([]);
+  const [cinematictotalVideos, setCinematicTotalVideos] = useState(null);
+
+  const [kidsvideos, setKidsVideos] = useState([]);
+  const [kidstotalVideos, setKidsTotalVideos] = useState(null);
+
+  const [tvvideos, setTVVideos] = useState([]);
+  const [tvtotalVideos, setTVTotalVideos] = useState(null);
+
+  const [learningvideos, setLearningVideos] = useState([]);
+  const [learningtotalVideos, setLearningTotalVideos] = useState(null);
+
+  const [fanStarvideos, setfanStarVideos] = useState([]);
+  const [fanStartotalVideos, setfanStarTotalVideos] = useState(null);
+
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -113,7 +128,6 @@ export default function ViewProfile({navigation}) {
   };
 
   const getUserID = async () => {
-    console.log('AT User Id');
     try {
       const result = await AsyncStorage.getItem('authToken ');
       if (result !== null) {
@@ -131,12 +145,12 @@ export default function ViewProfile({navigation}) {
   };
 
   const fetchUserId = async tokens => {
-    console.log('Token', tokens);
+    // console.log('Token', tokens);
     const result3 = await AsyncStorage.getItem('userId ');
     if (result3 !== null) {
       setUserId(result3);
 
-      console.log('user id retrieved:', result3);
+      // console.log('user id retrieved:', result3);
       fetchUser(tokens, result3);
     } else {
       console.log('result is null', result3);
@@ -150,7 +164,7 @@ export default function ViewProfile({navigation}) {
   ];
 
   const fetchUser = async (tokens, user) => {
-    console.log('Came to fetch Id');
+    // console.log('Came to fetch Id');
     const token = tokens;
 
     try {
@@ -170,6 +184,16 @@ export default function ViewProfile({navigation}) {
       setImage(result.user.image);
       setEmail(result.user.email);
       fetchMyVideos(tokens, user);
+      fetchMyPicTour(tokens, user);
+      fetchMyMarketZoneTour(tokens, user);
+      fetchMyNews(tokens, user);
+      fetchMyQAFI(tokens, user);
+      fetchMyGEBC(tokens, user);
+      fetchCinematic(tokens, user)
+      fetchKidsVid(tokens, user);
+      FetchtvProgmax(tokens, user);
+      FetchlearningHobbies(tokens, user);
+      FetchfanStar(tokens, user);
     } catch (error) {
       console.error('Error USER:', error);
     }
@@ -199,7 +223,7 @@ export default function ViewProfile({navigation}) {
       //console.log('Resultings', result.Videos);
       setVideos(result.Videos); // Update the state with the fetched data
       setTotalVideos(result.totalVideos);
-      fetchMyPicTour(tokens, user);
+      // fetchMyPicTour(tokens, user);
     } catch (error) {
       console.error('Error VIDEOS', error);
     }
@@ -223,7 +247,7 @@ export default function ViewProfile({navigation}) {
       //console.log('Resultings', result.Videos);
       setPics(result.Tours); // Update the state with the fetched data
       setTotalPics(result.totalTours);
-      fetchMyMarketZoneTour(tokens, user);
+      // fetchMyMarketZoneTour(tokens, user);
     } catch (error) {
       console.error('Error PIC TOUR', error);
     }
@@ -247,15 +271,15 @@ export default function ViewProfile({navigation}) {
       //console.log('Resultings', result.AllItems);
       setMarketZone(result.AllItems); // Update the state with the fetched data
       setTotalMarketZone(result.totalItems);
-      fetchMyNews(tokens, user);
+      // fetchMyNews(tokens, user);
     } catch (error) {
       console.error('Error MARKET ZONE:', error);
     }
   };
 
   const fetchMyNews = async (tokens, user) => {
-    console.log('TOKEN', tokens);
-    console.log('USER', user);
+    // console.log('TOKEN', tokens);
+    // console.log('USER', user);
     const token = tokens;
 
     try {
@@ -270,10 +294,10 @@ export default function ViewProfile({navigation}) {
       );
 
       const result = await response.json();
-      console.log('Resultings ON NEWS', result.News);
+      // console.log('Resultings ON NEWS', result.News);
       setNews(result.News); // Update the state with the fetched data
       setTotalNews(result.totalNews);
-      fetchMyQAFI(tokens, user);
+      // fetchMyQAFI(tokens, user);
     } catch (error) {
       console.error('Error ON NEWS', error);
     }
@@ -297,7 +321,7 @@ export default function ViewProfile({navigation}) {
       //console.log('Resultings', result.QAFIs);
       setQAFI(result.QAFIs); // Update the state with the fetched data
       setTotalQAFI(result.totalQAFIs);
-      fetchMyGEBC(tokens, user);
+      // fetchMyGEBC(tokens, user);
     } catch (error) {
       console.error('Error MY QAFI', error);
     }
@@ -321,9 +345,128 @@ export default function ViewProfile({navigation}) {
       //console.log('Resultings', result.GEBCs);
       setGEBC(result.GEBCs); // Update the state with the fetched data
       setTotalGEBC(result.totalGEBCs);
+      // fetchCinematic(tokens, user)
       setLoading(false);
     } catch (error) {
       console.error('Error GEBC:', error);
+    }
+  };
+
+  const fetchCinematic = async (tokens, user) => {
+    const token = tokens;
+
+    try {
+      const response = await fetch(
+        base_url + `cinematics/getByUserId/${user}?page=1&limit=100000`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const result = await response.json();
+      // console.log('Resultings of cinematic', result.videos);
+      setCinematicVideos(result.videos); // Update the state with the fetched data
+      setCinematicTotalVideos(result.totalVideos);
+      // fetchKidsVid(tokens, user);
+    } catch (error) {
+      console.error('Error VIDEOS', error);
+    }
+  };
+
+  const fetchKidsVid = async (tokens, user) => {
+    const token = tokens;
+
+    try {
+      const response = await fetch(
+        base_url + `kidVids/getByUserId/${user}?page=1&limit=100000`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const result = await response.json();
+      // console.log('Resultings of kids', result.videos);
+      setKidsVideos(result.videos); // Update the state with the fetched data
+      setKidsTotalVideos(result.totalVideos);
+      // FetchtvProgmax(tokens, user);
+    } catch (error) {
+      console.error('Error VIDEOS', error);
+    }
+  };
+  const FetchtvProgmax = async (tokens, user) => {
+    const token = tokens;
+
+    try {
+      const response = await fetch(
+        base_url + `tvProgmax/getByUserId/${user}?page=1&limit=100000`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const result = await response.json();
+      // console.log('Resultings of tvProgmax', result.totalVideos);
+      setTVVideos(result.videos); // Update the state with the fetched data
+      setTVTotalVideos(result.totalVideos);
+      // FetchlearningHobbies(tokens, user);
+    } catch (error) {
+      console.error('Error VIDEOS', error);
+    }
+  };
+  const FetchlearningHobbies = async (tokens, user) => {
+    const token = tokens;
+
+    try {
+      const response = await fetch(
+        base_url + `learningHobbies/getByUserId/${user}?page=1&limit=100000`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const result = await response.json();
+      // console.log('Resultings of learningHobbies', result.totalVideos);
+      setLearningVideos(result.videos); // Update the state with the fetched data
+      setLearningTotalVideos(result.totalVideos);
+      // FetchfanStar(tokens, user);
+    } catch (error) {
+      console.error('Error VIDEOS', error);
+    }
+  };
+
+  const FetchfanStar = async (tokens, user) => {
+    const token = tokens;
+
+    try {
+      const response = await fetch(
+        base_url + `fanStar/getByUserId/${user}?page=1&limit=100000`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const result = await response.json();
+      // console.log('Resultings of fanStar', result.totalVideos);
+      setfanStarVideos(result.videos); // Update the state with the fetched data
+      setfanStarTotalVideos(result.totalVideos);
+      // fetchMyPicTour(tokens, user);
+    } catch (error) {
+      console.error('Error VIDEOS', error);
     }
   };
 
@@ -434,9 +577,9 @@ export default function ViewProfile({navigation}) {
   ];
 
   const renderAvailableApps = item => {
-    console.log('Items Of Market', item.images[0].image);
+    // console.log('Items Of Market', item.images[0].image);
     const imageUri = item.images[0]?.image;
-    console.log(imageUri);
+    // console.log(imageUri);
     return (
       <TouchableOpacity
         onPress={() =>
@@ -507,7 +650,7 @@ export default function ViewProfile({navigation}) {
   };
 
   const renderAvailableAppsPic = item => {
-    console.log('Items Pics', item);
+    // console.log('Items Pics', item);
 
     const imageUrl =
       item.image && item.image
@@ -556,14 +699,14 @@ export default function ViewProfile({navigation}) {
             }}>
             {item?.description}
           </Text>
-          <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} />
+          {/* <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} /> */}
         </View>
       </TouchableOpacity>
     );
   };
 
   const renderAvailableAppsVideo = item => {
-    console.log('Video Items', item);
+    // console.log('Video Items', item);
     return (
       <TouchableOpacity
         onPress={() =>
@@ -606,7 +749,253 @@ export default function ViewProfile({navigation}) {
             {item.description}
           </Text>
 
-          <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} />
+          {/* <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} /> */}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  
+  const renderCinematicVideos = item => {
+    // console.log('Video Items', item);
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Cinematics_details', {videoData: item, identifier : true })
+        }
+        style={{width: wp(28), margin: 5}}>
+        <View>
+          <Image
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+
+              zIndex: 1, // Ensure it's on top of other elements
+              //flex: 1,
+              width: '100%',
+              height: hp(12),
+              borderRadius: wp(2.1),
+              resizeMode: 'cover',
+            }}
+            source={{uri: item.thumbnail}}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: wp(2),
+            marginTop: hp(12.5),
+          }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{
+              fontSize: hp(1.5),
+              color: '#000000',
+              fontFamily: 'Inter-Regular',
+              width: wp(23),
+            }}>
+            {item.description}
+          </Text>
+
+          {/* <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} /> */}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  const renderKidsVideo = item => {
+    // console.log('Video Items', item);
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Kids_vid_details', {videoData: item, identifier : true })
+        }
+        style={{width: wp(28), margin: 5}}>
+        <View>
+          <Image
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+
+              zIndex: 1, // Ensure it's on top of other elements
+              //flex: 1,
+              width: '100%',
+              height: hp(12),
+              borderRadius: wp(2.1),
+              resizeMode: 'cover',
+            }}
+            source={{uri: item.thumbnail}}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: wp(2),
+            marginTop: hp(12.5),
+          }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{
+              fontSize: hp(1.5),
+              color: '#000000',
+              fontFamily: 'Inter-Regular',
+              width: wp(23),
+            }}>
+            {item.description}
+          </Text>
+
+          {/* <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} /> */}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  const renderTVVideos = item => {
+    // console.log('Video Items', item);
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Tv_Promax_details', {videoData: item, identifier : true })
+        }
+        style={{width: wp(28), margin: 5}}>
+        <View>
+          <Image
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+
+              zIndex: 1, // Ensure it's on top of other elements
+              //flex: 1,
+              width: '100%',
+              height: hp(12),
+              borderRadius: wp(2.1),
+              resizeMode: 'cover',
+            }}
+            source={{uri: item.thumbnail}}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: wp(2),
+            marginTop: hp(12.5),
+          }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{
+              fontSize: hp(1.5),
+              color: '#000000',
+              fontFamily: 'Inter-Regular',
+              width: wp(23),
+            }}>
+            {item.description}
+          </Text>
+
+          {/* <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} /> */}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  const renderLearnVideo = item => {
+    // console.log('Video Items', item);
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Learning_details', {videoData: item, identifier : true })
+        }
+        style={{width: wp(28), margin: 5}}>
+        <View>
+          <Image
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+
+              zIndex: 1, // Ensure it's on top of other elements
+              //flex: 1,
+              width: '100%',
+              height: hp(12),
+              borderRadius: wp(2.1),
+              resizeMode: 'cover',
+            }}
+            source={{uri: item.thumbnail}}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: wp(2),
+            marginTop: hp(12.5),
+          }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{
+              fontSize: hp(1.5),
+              color: '#000000',
+              fontFamily: 'Inter-Regular',
+              width: wp(23),
+            }}>
+            {item.description}
+          </Text>
+
+          {/* <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} /> */}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  const renderFanstarVideo = item => {
+    // console.log('Video Items', item);
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Fans_star_details', {videoData: item, identifier : true })
+        }
+        style={{width: wp(28), margin: 5}}>
+        <View>
+          <Image
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+
+              zIndex: 1, // Ensure it's on top of other elements
+              //flex: 1,
+              width: '100%',
+              height: hp(12),
+              borderRadius: wp(2.1),
+              resizeMode: 'cover',
+            }}
+            source={{uri: item.thumbnail}}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: wp(2),
+            marginTop: hp(12.5),
+          }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{
+              fontSize: hp(1.5),
+              color: '#000000',
+              fontFamily: 'Inter-Regular',
+              width: wp(23),
+            }}>
+            {item.description}
+          </Text>
+
+          {/* <Entypo name={'dots-three-vertical'} size={14} color={'#4A4A4A'} /> */}
         </View>
       </TouchableOpacity>
     );
@@ -615,7 +1004,7 @@ export default function ViewProfile({navigation}) {
   // DISC
 
   const renderSearches = item => {
-    console.log('Items Of Searches', item);
+    // console.log('Items Of Searches', item);
     const isSelected = selectedItemId === item.id;
 
     return (
@@ -628,14 +1017,14 @@ export default function ViewProfile({navigation}) {
         ]}
         onPress={() => {
           setSelectedItemId(item.id);
-          console.log('Selected item:', item.id);
+          // console.log('Selected item:', item.id);
           if (item.id === 1) {
-            console.log('ITEMS NEWS CAllED');
+            // console.log('ITEMS NEWS CAllED');
             fetchMyNews(authToken, userId);
             setSelectedItemId(1);
           } else if (item.id === 2) {
             setSelectedItemId(2);
-            console.log('On Letter id', item.id);
+            // console.log('On Letter id', item.id);
           } else if (item.id === 3) {
             setSelectedItemId(3);
           }
@@ -814,9 +1203,9 @@ export default function ViewProfile({navigation}) {
   //RENDER GEBC
 
   const renderAvailableAppsGEBC = item => {
-    console.log('Items Of GEBC', item?.image);
+    // console.log('Items Of GEBC', item?.image);
     const imageUri = item?.image;
-    console.log(imageUri);
+    // console.log(imageUri);
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('ViewUpdateGEBC', {details: item})}
@@ -891,9 +1280,9 @@ export default function ViewProfile({navigation}) {
   //RENDER QAFI
 
   const renderAvailableAppsQAFI = item => {
-    console.log('Items Of QAFI', item?.image);
+    // console.log('Items Of QAFI', item?.image);
     const imageUri = item?.image;
-    console.log(imageUri);
+    // console.log(imageUri);
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('ViewUpdateQAFI', {details: item})}
@@ -968,9 +1357,9 @@ export default function ViewProfile({navigation}) {
   //RENDER NEWS
 
   const renderAvailableAppsNEWS = item => {
-    console.log('Items Of NEWS', item?.image);
+    // console.log('Items Of NEWS', item?.image);
     const imageUri = item?.image;
-    console.log(imageUri);
+    // console.log(imageUri);
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('ViewUpdateNews', {details: item})}
@@ -1042,6 +1431,27 @@ export default function ViewProfile({navigation}) {
 
   //---------------------------\\
 
+
+  const data = [
+    { id: '1', total: totalVideos, label: 'Video Mania' },
+    { id: '2', total: totalPics, label: 'Pic Tour' },
+    { id: '3', total: totalNews + totalGEBC + totalQAFI, label: 'DISC' },
+    { id: '4', total: totalMarketZone, label: 'Marketpark' },
+    { id: '5', total: cinematictotalVideos, label: 'Cinetimatics' },
+    { id: '6', total: kidstotalVideos, label: 'kidvids' },
+    { id: '7', total: tvtotalVideos, label: 'TV progmax' },
+    { id: '8', total: learningtotalVideos, label: 'Learning and Hobbies' },
+    { id: '9', total: fanStartotalVideos, label: 'Fan Star Area' },
+    // Add more items as needed
+  ];
+  const renderItemforHeading = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.boldText}>{item.total}</Text>
+      <Text style={styles.regularText}>{item.label}</Text>
+    </View>
+
+  );
+  // //////////
   return (
     <View style={styles.container}>
       <StatusBar
@@ -1078,7 +1488,7 @@ export default function ViewProfile({navigation}) {
               }}>
               <Image
                 source={{uri: image}}
-                style={{width: '100%', height: '100%', resizeMode: 'contain'}}
+                style={{width: '100%', height: '100%', resizeMode: 'contain',  borderRadius: wp(20) / 2,}}
               />
             </View>
           ) : (
@@ -1114,7 +1524,15 @@ export default function ViewProfile({navigation}) {
             {email}
           </Text>
         </View>
-        <View
+        <FlatList
+        horizontal
+        data={data}
+        renderItem={renderItemforHeading}
+        keyExtractor={(item) => item.id}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.flatListContainer}
+      />
+        {/* <View
           style={{
             height: hp(6.5),
             marginTop: hp(1.5),
@@ -1245,7 +1663,7 @@ export default function ViewProfile({navigation}) {
               Marketpark
             </Text>
           </View>
-        </View>
+        </View> */}
 
         <View style={{height: hp(23), marginLeft: wp(8), marginTop: hp(5)}}>
           <Text
@@ -1261,7 +1679,7 @@ export default function ViewProfile({navigation}) {
           </Text>
 
           <View style={{marginTop: hp(1), height: '100%'}}>
-            {loading === true ? (
+            {loading ? (
               <View
                 style={{
                   position: 'absolute',
@@ -1316,7 +1734,7 @@ export default function ViewProfile({navigation}) {
           </Text>
 
           <View style={{marginTop: hp(1), height: '100%'}}>
-            {loading === true ? (
+            {loading ? (
               <View
                 style={{
                   position: 'absolute',
@@ -1357,8 +1775,7 @@ export default function ViewProfile({navigation}) {
           </View>
         </View>
 
-        <View
-          style={{height: hp(23), marginHorizontal: wp(8), marginTop: hp(1)}}>
+        <View style={{height: hp(23), marginHorizontal: wp(8), marginTop: hp(1)}}>
           <Text
             style={{
               fontSize: hp(2.1),
@@ -1415,8 +1832,7 @@ export default function ViewProfile({navigation}) {
           {/* </View> */}
         </View>
 
-        <View
-          style={{height: hp(23), marginHorizontal: wp(8), marginTop: hp(5)}}>
+        <View style={{height: hp(23), marginHorizontal: wp(8), marginTop: hp(10)}}>
           <Text
             style={{
               fontSize: hp(2.1),
@@ -1429,7 +1845,7 @@ export default function ViewProfile({navigation}) {
             My Market Zone
           </Text>
 
-          {loading === true ? (
+          {loading ? (
             <View
               style={{
                 position: 'absolute',
@@ -1468,6 +1884,281 @@ export default function ViewProfile({navigation}) {
             </>
           )}
         </View>
+
+        <View style={{height: hp(23), marginLeft: wp(8), marginTop: hp(5)}}>
+          <Text
+            style={{
+              fontSize: hp(2.1),
+              //marginLeft: wp(2),
+              //   /marginTop:hp(0.1),
+              color: '#77838F',
+              //fontWeight: 'bold',
+              fontFamily: 'Inter-Bold',
+            }}>
+            Cinematics
+          </Text>
+
+          <View style={{marginTop: hp(1), height: '100%'}}>
+            {loading ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="large" color="#FACA4E" />
+              </View>
+            ) : (
+              <>
+                {cinematicvideos?.length === 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{fontWeight: 'bold', fontSize: hp(2.1)}}>
+                      No data available
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    style={{flex: 1, marginLeft: wp(-1.5)}}
+                    showsHorizontalScrollIndicator={false}
+                    data={cinematicvideos}
+                    horizontal
+                    //keyExtractor={item => item.id.toString()}
+                    renderItem={({item}) => renderCinematicVideos(item)}
+                  />
+                )}
+              </>
+            )}
+          </View>
+        </View>
+
+        <View style={{height: hp(23), marginLeft: wp(8), marginTop: hp(5)}}>
+          <Text
+            style={{
+              fontSize: hp(2.1),
+              //marginLeft: wp(2),
+              //   /marginTop:hp(0.1),
+              color: '#77838F',
+              //fontWeight: 'bold',
+              fontFamily: 'Inter-Bold',
+            }}>
+           Kids Vids
+          </Text>
+
+          <View style={{marginTop: hp(1), height: '100%'}}>
+            {loading ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="large" color="#FACA4E" />
+              </View>
+            ) : (
+              <>
+                {kidsvideos?.length === 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{fontWeight: 'bold', fontSize: hp(2.1)}}>
+                      No data available
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    style={{flex: 1, marginLeft: wp(-1.5)}}
+                    showsHorizontalScrollIndicator={false}
+                    data={kidsvideos}
+                    horizontal
+                    //keyExtractor={item => item.id.toString()}
+                    renderItem={({item}) => renderKidsVideo(item)}
+                  />
+                )}
+              </>
+            )}
+          </View>
+        </View>
+
+        <View style={{height: hp(23), marginLeft: wp(8), marginTop: hp(5)}}>
+          <Text
+            style={{
+              fontSize: hp(2.1),
+              //marginLeft: wp(2),
+              //   /marginTop:hp(0.1),
+              color: '#77838F',
+              //fontWeight: 'bold',
+              fontFamily: 'Inter-Bold',
+            }}>
+           TV Progmax
+          </Text>
+
+          <View style={{marginTop: hp(1), height: '100%'}}>
+            {loading ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="large" color="#FACA4E" />
+              </View>
+            ) : (
+              <>
+                {tvvideos?.length === 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{fontWeight: 'bold', fontSize: hp(2.1)}}>
+                      No data available
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    style={{flex: 1, marginLeft: wp(-1.5)}}
+                    showsHorizontalScrollIndicator={false}
+                    data={tvvideos}
+                    horizontal
+                    //keyExtractor={item => item.id.toString()}
+                    renderItem={({item}) => renderTVVideos(item)}
+                  />
+                )}
+              </>
+            )}
+          </View>
+        </View>
+
+        <View style={{height: hp(23), marginLeft: wp(8), marginTop: hp(5)}}>
+          <Text
+            style={{
+              fontSize: hp(2.1),
+              //marginLeft: wp(2),
+              //   /marginTop:hp(0.1),
+              color: '#77838F',
+              //fontWeight: 'bold',
+              fontFamily: 'Inter-Bold',
+            }}>
+            Learning and Hobbies
+          </Text>
+
+          <View style={{marginTop: hp(1), height: '100%'}}>
+            {loading ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="large" color="#FACA4E" />
+              </View>
+            ) : (
+              <>
+                {learningvideos?.length === 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{fontWeight: 'bold', fontSize: hp(2.1)}}>
+                      No data available
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    style={{flex: 1, marginLeft: wp(-1.5)}}
+                    showsHorizontalScrollIndicator={false}
+                    data={learningvideos}
+                    horizontal
+                    //keyExtractor={item => item.id.toString()}
+                    renderItem={({item}) => renderLearnVideo(item)}
+                  />
+                )}
+              </>
+            )}
+          </View>
+        </View>
+
+        <View style={{height: hp(23), marginLeft: wp(8), marginTop: hp(5)}}>
+          <Text
+            style={{
+              fontSize: hp(2.1),
+              //marginLeft: wp(2),
+              //   /marginTop:hp(0.1),
+              color: '#77838F',
+              //fontWeight: 'bold',
+              fontFamily: 'Inter-Bold',
+            }}>
+            Fan Star Area
+          </Text>
+
+          <View style={{marginTop: hp(1), height: '100%'}}>
+            {loading ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="large" color="#FACA4E" />
+              </View>
+            ) : (
+              <>
+                {fanStarvideos?.length === 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{fontWeight: 'bold', fontSize: hp(2.1)}}>
+                      No data available
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    style={{flex: 1, marginLeft: wp(-1.5)}}
+                    showsHorizontalScrollIndicator={false}
+                    data={fanStarvideos}
+                    horizontal
+                    //keyExtractor={item => item.id.toString()}
+                    renderItem={({item}) => renderFanstarVideo(item)}
+                  />
+                )}
+              </>
+            )}
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
@@ -1492,5 +2183,27 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter',
     fontWeight: '700',
     fontSize: hp(1.8),
+  },
+  flatListContainer: {
+    // paddingVertical: hp(1.5),
+    paddingHorizontal: wp(2),
+  },
+  itemContainer: {
+    width: wp(30), // Adjusted width to fit approximately 4 items on the screen
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: 'green',
+    // marginHorizontal: wp(1.5), // Reduced margin between items
+    height: hp(9),
+  },
+  boldText: {
+    fontSize: hp(2.5),
+    color: '#1E2022',
+    fontFamily: 'Inter-Bold',
+  },
+  regularText: {
+    fontSize: hp(1.8),
+    color: '#77838F',
+    fontFamily: 'Inter-Regular',
   },
 });

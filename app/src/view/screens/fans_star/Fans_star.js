@@ -9,6 +9,7 @@ import {
   TextInput,
   Text,
   View,
+  Dimensions,
   SectionList,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
@@ -31,6 +32,7 @@ import { appImages } from "../../../assets/utilities";
 import Add from "../../../assets/svg/AddMainScreen.svg";
 import { base_url } from "../../../../../baseUrl";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import Carousel from 'react-native-snap-carousel';
 import Swiper from "react-native-swiper";
 const bannerAds = [
   {
@@ -659,47 +661,49 @@ export default function Fans_star({  route }) {
         </View> */}
               {/* // */}
             {/* // start of banner slider */}
-        <View
-          style={{
-            alignItems: "center",
-            height: hp(14),
-            marginLeft: 8,
-            marginVertical: hp(2),
-          }}
-        >
-            {isLoading ? (
+            <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
         <ActivityIndicator size="large" color="#FACA4E" />
       ) : adsData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
         </View>
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <View
+              key={item.id}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </View>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.86}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
 
 
         <View style={styles.latestSearchList}>

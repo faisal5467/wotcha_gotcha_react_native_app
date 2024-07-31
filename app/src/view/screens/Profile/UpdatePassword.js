@@ -51,48 +51,7 @@ const UpdatePassword = ({navigation}) => {
 
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    fetchVideos();
-  }, [isFocused]);
-
-  const fetchVideos = async () => {
-    // Simulate loading
-    setIsLoading(true);
-
-    await getUserID();
-    // Fetch data one by one
-    // Once all data is fetched, set loading to false
-    setIsLoading(false);
-  };
-
-  const getUserID = async () => {
-    console.log("Id's");
-    try {
-      const result1 = await AsyncStorage.getItem('authToken ');
-      if (result1 !== null) {
-        setAuthToken(result1);
-        console.log('user token retrieved:', result1);
-      }
-
-      const result3 = await AsyncStorage.getItem('userId ');
-      if (result3 !== null) {
-        setUserId(result3);
-
-        console.log('user id retrieved:', result3);
-      }
-      const passwordResult = await AsyncStorage.getItem('Password');
-      if (passwordResult !== null) {
-        setPasswordAccount(passwordResult);
-        console.log('password recieved', passwordResult);
-      } else {
-        console.log('no password recieved');
-      }
-    } catch (error) {
-      // Handle errors here
-      console.error('Error retrieving user ID:', error);
-    }
-  };
-
+ 
   const [newPassword, setNewPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
@@ -141,6 +100,48 @@ const UpdatePassword = ({navigation}) => {
   const [oldPassword_ShowPassword, setOldPassword_ShowPassword] =
     useState(true);
 
+    useEffect(() => {
+      fetchVideos();
+    }, [isFocused]);
+  
+    const fetchVideos = async () => {
+      // Simulate loading
+      setIsLoading(true);
+  
+      await getUserID();
+      // Fetch data one by one
+      // Once all data is fetched, set loading to false
+      setIsLoading(false);
+    };
+  
+    const getUserID = async () => {
+      console.log("Id's");
+      try {
+        const result1 = await AsyncStorage.getItem('authToken ');
+        if (result1 !== null) {
+          setAuthToken(result1);
+          console.log('user token retrieved:', result1);
+        }
+  
+        const result3 = await AsyncStorage.getItem('userId ');
+        if (result3 !== null) {
+          setUserId(result3);
+  
+          console.log('user id retrieved:', result3);
+        }
+        const passwordResult = await AsyncStorage.getItem('Password');
+        if (passwordResult !== null) {
+          setPasswordAccount(passwordResult);
+          console.log('password recieved', passwordResult);
+        } else {
+          console.log('no password recieved');
+        }
+      } catch (error) {
+        // Handle errors here
+        console.error('Error retrieving user ID:', error);
+      }
+    };
+  
   //--------------\\
 
   const handleFocus = () => {
@@ -322,17 +323,23 @@ const UpdatePassword = ({navigation}) => {
 
   const checkPassword = () => {
     console.log('Came to confirm password');
-
+    setIsLoading(true);
     if (signin_pass !== confirm) {
+      setIsLoading(false);
       handleUpdateConfirmPassword();
+    
     } else if (OldPassword !== '' && signin_pass !== '' && confirm !== '') {
       if (OldPassword !== oldPasswordAccount) {
+        setIsLoading(false);
         handleUpdateConfirmPasswordOld();
+      
       } else {
         resetPassword();
       }
     } else {
+      setIsLoading(false);
       handleUpdateConfirmPasswordAlert();
+     
     }
   };
 
@@ -396,7 +403,7 @@ const UpdatePassword = ({navigation}) => {
           text={'Update Password'}
         />
       </View>
-      <View style={{marginTop: hp(5)}}>
+      <View style={{marginTop: hp(5),  alignItems:'center'}}>
         <TextInput
           mode="outlined"
           label="Old Password"
@@ -442,7 +449,7 @@ const UpdatePassword = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      <View>
+      <View style={{ alignItems:'center'}}>
         <TextInput
           mode="outlined"
           label="New Password"
@@ -486,7 +493,7 @@ const UpdatePassword = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      <View>
+      <View style={{ alignItems:'center'}}>
         <TextInput
           mode="outlined"
           label="Confirm Password"
@@ -539,9 +546,10 @@ const UpdatePassword = ({navigation}) => {
       <View style={{marginTop: '90%', alignSelf: 'center'}}>
         <CustomButton
           title="Update"
-          load={loading}
+          // load={loading}
           // checkdisable={inn == '' && cm == '' ? true : false}
           customClick={() => {
+            // setIsLoading(true);
             checkPassword();
           }}
         />
@@ -554,20 +562,35 @@ const UpdatePassword = ({navigation}) => {
         visible={snackbarVisible}
       />
 
-      {loading && (
+      {/* {loading && (
         <View
           style={{
             position: 'absolute',
-            top: 0,
-            bottom: 0,
+            // top: 0,
+            bottom: 56,
             left: 0,
             right: 0,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <ActivityIndicator size="large" color="#FACA4E" />
+          <ActivityIndicator size="large" color="#fff" />
         </View>
-      )}
+      )} */}
+      {loading && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white
+            }}>
+            <ActivityIndicator size="large" color="#FACA4E" />
+          </View>
+        )}
 
       <CustomSnackbar
         message={'Alert!'}
@@ -636,15 +659,15 @@ const styles = StyleSheet.create({
     color: '#9597A6',
     fontSize: wp(3.5),
   },
-  ti: {
-    marginHorizontal: '7%',
-    marginTop: '10%',
-    width: 300,
-    backgroundColor: 'white',
-    fontSize: wp(4),
-    paddingLeft: '2%',
-    borderRadius: 10,
-  },
+  // ti: {
+  //   marginHorizontal: '7%',
+  //   marginTop: '10%',
+  //   width: 300,
+  //   backgroundColor: 'white',
+  //   fontSize: wp(4),
+  //   paddingLeft: '2%',
+  //   borderRadius: 10,
+  // },
 
   bg: {
     // height:800,
@@ -661,7 +684,7 @@ const styles = StyleSheet.create({
   ti: {
     marginHorizontal: '7%',
     marginTop: '5%',
-    width: 300,
+    width: '86%',
     backgroundColor: 'white',
     fontSize: wp(4),
     paddingLeft: '2%',
@@ -678,7 +701,7 @@ const styles = StyleSheet.create({
     height: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    right: 45,
+    right: 40,
     top: 31,
   },
   txt: {

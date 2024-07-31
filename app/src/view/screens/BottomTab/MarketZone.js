@@ -1128,6 +1128,7 @@ import {
   TextInput,
   Text,
   View,
+  Dimensions
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -1139,10 +1140,10 @@ import Fontiso from "react-native-vector-icons/Fontisto";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import RBSheet from "react-native-raw-bottom-sheet";
-
+import Carousel from 'react-native-snap-carousel';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
-
+import Swiper from "react-native-swiper";
 import Headers from "../../../assets/Custom/Headers";
 import { appImages } from "../../../assets/utilities";
 import Add from "../../../assets/svg/AddMainScreen.svg";
@@ -1723,6 +1724,49 @@ export default function MarketZone({ navigation }) {
         {/* faisal coding 20.5.2025 */}
       {/* // start of banner slider */}
       <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#FACA4E" />
+      ) : adsData.length === 0 ? (
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
+        </View>
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <View
+              key={item.id}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </View>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
+      {/* <View
           style={{
             alignItems: "center",
             height: hp(14),
@@ -1762,7 +1806,7 @@ export default function MarketZone({ navigation }) {
           </Swiper>
            )
           }
-        </View>
+        </View> */}
         {/* faisal coding end */}
 
         <View style={{ marginTop: hp(1), marginLeft: wp(5) }}>

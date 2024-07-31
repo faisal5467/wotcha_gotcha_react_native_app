@@ -136,6 +136,7 @@ import MoreScreen from './app/src/view/screens/BottomTab/More';
 import VideoPlayerScreen from './app/src/view/screens/Tv_Promax/VideoPlayerScreen';
 import Section from './app/src/view/screens/BottomTab/Section';
 import Test from './app/src/view/screens/BottomTab/Test';
+import UpdateContent from './app/src/view/screens/Cinematics/UpdateContent';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -189,6 +190,11 @@ const App = () => {
         <Stack.Screen
           name="UpdateVideoProfile"
           component={UpdateVideoProfile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="UpdateContent"
+          component={UpdateContent}
           options={{headerShown: false}}
         />
 

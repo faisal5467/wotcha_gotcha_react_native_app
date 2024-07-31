@@ -11,6 +11,7 @@ import {
   Text,
   View,
   Dimensions,
+  Linking 
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -21,7 +22,7 @@ import {
 import Entypo from "react-native-vector-icons/Entypo";
 import Headers from "../../../assets/Custom/Headers";
 import { appImages } from "../../../assets/utilities";
-
+import Carousel from 'react-native-snap-carousel';
 //---------------- IMPORTS OF DASHBOARD ----------------------\\
 
 import { InstalledApps, RNLauncherKitHelper } from "react-native-launcher-kit";
@@ -130,6 +131,7 @@ export default function Dashboard({ route }) {
   const [Education, seteducation] = useState(false);
   const [adsData, setAdsData] = useState([]);
   const [adsinActiveData, setAdsInActiveData] = useState([]);
+  const [carouselIndex, setCarouselIndex] = useState(0);
   // useEffect(() => {
   // const loaderTimeout = setTimeout(() => {
   //     setAloader(false);
@@ -137,9 +139,6 @@ export default function Dashboard({ route }) {
 
   //  return () => clearTimeout(loaderTimeout);
   // }, []);
-
- 
-
 
   const [flatListKey, setFlatListKey] = useState(Date.now());
 
@@ -714,10 +713,10 @@ export default function Dashboard({ route }) {
   ]);
   const [error, setError] = useState(null);
   const [authToken, setAuthToken] = useState(null);
-  const [selectedItemVideoId, setSelectedItemVideoId] = useState(null); // Set selectedItemVideoId to 17 initially
+  const [selectedItemVideoId, setSelectedItemVideoId] = useState(17); // Set selectedItemVideoId to 17 initially
   const [selectedItemDiscId, setSelectedItemDiscId] = useState(1);
-  const [selectedItemPicsId, setSelectedItemPicsId] = useState(null);
-  const [selectedItemIdMarket, setSelectedItemIdMarket] = useState(null);
+  const [selectedItemPicsId, setSelectedItemPicsId] = useState(34);
+  const [selectedItemIdMarket, setSelectedItemIdMarket] = useState('Africa');
   const [categoriesSelectMarket, setCategorySelectMarket] = useState([]);
   const RegionArea = ["Africa", "Europe", "Americas", "Asia", "Middle East"];
   const MassApp = [
@@ -746,7 +745,7 @@ export default function Dashboard({ route }) {
         ]}
         onPress={() => {
           setSelectedItemVideoId(item.id); // Update selectedItemVideoId when item is selected
-          // console.log("Selected item:", item.id);
+          console.log("Selected item:", item.id);
         }}
       >
         <Text
@@ -770,12 +769,13 @@ export default function Dashboard({ route }) {
         style={[
           styles.searchesDetails,
           {
-            backgroundColor: isSelected ? "#FACA4E" : "#F2F2F2",
+            // backgroundColor: isSelected ? "#FACA4E" : "#F2F2F2",
+            backgroundColor: isSelected ? "#FACA4E" : "#DDDDDD",
           },
         ]}
         onPress={() => {
           setSelectedItemPicsId(item.id);
-          // console.log('Selected item:', item.title);
+          console.log('Selected item:', item.id);
         }}
       >
         <Text
@@ -911,12 +911,11 @@ export default function Dashboard({ route }) {
     selectedItemIdMarket,
   ]);
 
-
   useEffect(() => {
-  if (authToken){
-    fetchBannerConfig();
-    fetchBannerInActive();
-  }
+    if (authToken) {
+      fetchBannerConfig();
+      fetchBannerInActive();
+    }
   }, [authToken]);
 
   const fetchBannerConfig = async () => {
@@ -935,14 +934,14 @@ export default function Dashboard({ route }) {
       );
 
       const result = await response.json();
-      // console.log("AllBanners---", result.AllBanners);
+      console.log("AllBanners---top ", result.AllBanners);
       setAdsData(result.AllBanners);
     } catch (error) {
       console.error("Error AllBanners:", error);
     }
-    setIsLoading(false); 
+    setIsLoading(false);
   };
-  const fetchBannerInActive= async () => {
+  const fetchBannerInActive = async () => {
     const token = authToken;
     setIsLoading(true);
     try {
@@ -958,15 +957,14 @@ export default function Dashboard({ route }) {
       );
 
       const result = await response.json();
-      console.log("AllBanners AdsInActiveData---", result.AllBanners);
+      // console.log("AllBanners AdsInActiveData---", result.AllBanners);
       setAdsInActiveData(result.AllBanners);
     } catch (error) {
       console.error("Error AllBanners AdsInActiveData---", error);
     }
-    setIsLoading(false); 
+    setIsLoading(false);
   };
-// console.log('adsData----------', adsData)
-
+  // console.log('adsData----------', adsData)
 
   // if (error) {
   //   return <Text>Error--: {error.message}</Text>;
@@ -1146,7 +1144,7 @@ export default function Dashboard({ route }) {
     try {
       const response = await fetch(
         // base_url + `qafi/getAllQafisByCategory/${categoryIdNews}?page=1&limit=50`,
-        base_url + "qafi/getAllQafisByCategory/3?page=1&limit=50",
+        base_url + "qafi/getAllQafisByCategory/3?page=1&limit=50000",
         {
           method: "GET",
           headers: {
@@ -1730,7 +1728,7 @@ export default function Dashboard({ route }) {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("ViewNews", { picData: item })}
-        style={{ width: wp(25.5), margin: 5 }}
+        style={{width: wp(34), margin: 5, overflow:'hidden'}}
       >
         <View>
           <Image
@@ -1781,32 +1779,32 @@ export default function Dashboard({ route }) {
                 marginLeft: wp(0.5),
                 height: wp(7),
                 borderRadius: wp(7) / 2,
-              }}
-            >
+                alignItems:'center',
+                justifyContent:'center'
+              }}>
               <MaterialCommunityIcons
-                style={{ marginTop: hp(0.5) }}
-                name={"account-circle"}
-                size={30}
-                color={"#FACA4E"}
+                // style={{marginTop: hp(0.5)}}
+                name={'account-circle'}
+                size={24}
+                color={'#FACA4E'}
               />
-              {/*  <Image
-            source={appImages.profileImg}
-            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-          /> */}
             </View>
           )}
 
-          <Text
+<View style={{width:70}}>
+<Text ellipsizeMode="tail"
+                numberOfLines={1}
             style={{
               fontSize: hp(1.5),
               marginLeft: wp(0.7),
-              color: "#000000",
-              fontWeight: "bold",
-              fontFamily: "Inter",
-            }}
-          >
+              color: '#000000',
+              fontWeight: 'bold',
+              fontFamily: 'Inter',
+            }}>
             {item.username}
           </Text>
+
+</View>
 
           <View style={{ marginLeft: wp(1) }}>
             <NonVerified />
@@ -1821,7 +1819,7 @@ export default function Dashboard({ route }) {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("ViewQAFI", { picData: item })}
-        style={{ width: wp(25.5), margin: 5 }}
+        style={{width: wp(34), margin: 5, overflow:'hidden'}}
       >
         <View>
           <Image
@@ -1872,33 +1870,32 @@ export default function Dashboard({ route }) {
                 marginLeft: wp(0.5),
                 height: wp(7),
                 borderRadius: wp(7) / 2,
-              }}
-            >
+                alignItems:'center',
+                justifyContent:'center'
+              }}>
               <MaterialCommunityIcons
-                style={{ marginTop: hp(0.5) }}
-                name={"account-circle"}
-                size={30}
-                color={"#FACA4E"}
+                // style={{marginTop: hp(0.5)}}
+                name={'account-circle'}
+                size={24}
+                color={'#FACA4E'}
               />
-              {/*  <Image
-            source={appImages.profileImg}
-            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-          /> */}
             </View>
           )}
-
-          <Text
+<View style={{width:70}}>
+<Text ellipsizeMode="tail"
+                numberOfLines={1}
             style={{
               fontSize: hp(1.5),
               marginLeft: wp(0.7),
-              color: "#000000",
-              fontWeight: "bold",
-              fontFamily: "Inter",
-            }}
-          >
+              color: '#000000',
+              fontWeight: 'bold',
+              fontFamily: 'Inter',
+            }}>
             {item.username}
           </Text>
 
+</View>
+    
           <View style={{ marginLeft: wp(1) }}>
             <NonVerified />
           </View>
@@ -1912,7 +1909,7 @@ export default function Dashboard({ route }) {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("ViewGEBC", { picData: item })}
-        style={{ width: wp(25.5), margin: 5 }}
+        style={{width: wp(34), margin: 5, overflow:'hidden'}}
       >
         <View
           style={{
@@ -1960,33 +1957,32 @@ export default function Dashboard({ route }) {
                 marginLeft: wp(0.5),
                 height: wp(7),
                 borderRadius: wp(7) / 2,
-              }}
-            >
+                alignItems:'center',
+                justifyContent:'center'
+              }}>
               <MaterialCommunityIcons
-                style={{ marginTop: hp(0.5) }}
-                name={"account-circle"}
-                size={30}
-                color={"#FACA4E"}
+                // style={{marginTop: hp(0.5)}}
+                name={'account-circle'}
+                size={24}
+                color={'#FACA4E'}
               />
-              {/*  <Image
-            source={appImages.profileImg}
-            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-          /> */}
             </View>
           )}
 
-          <Text
+<View style={{width:70}}>
+<Text ellipsizeMode="tail"
+                numberOfLines={1}
             style={{
               fontSize: hp(1.5),
               marginLeft: wp(0.7),
-              color: "#000000",
-              fontWeight: "bold",
-              fontFamily: "Inter",
-            }}
-          >
+              color: '#000000',
+              fontWeight: 'bold',
+              fontFamily: 'Inter',
+            }}>
             {item.username}
           </Text>
 
+</View>
           <View style={{ marginLeft: wp(1) }}>
             <NonVerified />
           </View>
@@ -2056,8 +2052,11 @@ export default function Dashboard({ route }) {
         >
           <View
             style={{ marginTop: hp(1.5), flexDirection: "row", height: hp(18) }}
-          >
-            {data[6] === undefined || data[6]?.length === 0 ? (
+         >
+            <TouchableOpacity onPress={() => navigation.navigate('ViewNews',{
+                News: data[6]
+              })}>
+            {data[6] === undefined || data[6]?.length === 0 || data[6]?.image === undefined || data[6]?.image === null || data[6]?.image === '' || data[6]?.image === '0'  ? (
               <View
                 //onPress={() => navigation.navigate('News')}
                 style={{ width: wp(35), height: "100%", borderRadius: wp(5) }}
@@ -2117,6 +2116,7 @@ export default function Dashboard({ route }) {
                 )}
               </View>
             )}
+            </TouchableOpacity>
 
             <View style={{ justifyContent: "center", flex: 1 }}>
               <View
@@ -2293,6 +2293,9 @@ export default function Dashboard({ route }) {
         <View
           style={{ marginTop: hp(1.5), flexDirection: "row", height: hp(18) }}
         >
+              <TouchableOpacity onPress={() => navigation.navigate('ViewNews',{
+                News: data[6]
+              })}>
           {data[6] === undefined || data[6]?.length === 0 ? (
             <View
               //onPress={() => navigation.navigate('News')}
@@ -2335,7 +2338,7 @@ export default function Dashboard({ route }) {
               />
             </View>
           )}
-
+</TouchableOpacity>
           <View style={{ justifyContent: "center", flex: 1 }}>
             <View
               style={{
@@ -2450,7 +2453,10 @@ export default function Dashboard({ route }) {
         <View
           style={{ marginTop: hp(1.5), flexDirection: "row", height: hp(18) }}
         >
-          {data[6] === undefined || data[6]?.length === 0 ? (
+           <TouchableOpacity onPress={() => navigation.navigate('ViewNews',{
+                News: data[6]
+              })}>
+           {data[6] === undefined || data[6]?.length === 0 || data[6]?.image === undefined || data[6]?.image === null || data[6]?.image === '' || data[6]?.image === '0'  ? (
             <View
               //onPress={() => navigation.navigate('News')}
               style={{ width: wp(35), height: "100%", borderRadius: wp(5) }}
@@ -2508,7 +2514,7 @@ export default function Dashboard({ route }) {
               )}
             </View>
           )}
-
+</TouchableOpacity>
           <View style={{ justifyContent: "center", flex: 1 }}>
             <View
               style={{
@@ -2686,7 +2692,10 @@ export default function Dashboard({ route }) {
           <View
             style={{ marginTop: hp(1.5), flexDirection: "row", height: hp(18) }}
           >
-            {data[6] === undefined || data[6]?.length === 0 ? (
+               <TouchableOpacity onPress={() => navigation.navigate('ViewNews',{
+                News: data[6]
+              })}>
+           {data[6] === undefined || data[6]?.length === 0 || data[6]?.image === undefined || data[6]?.image === null || data[6]?.image === '' || data[6]?.image === '0'  ? (
               <View
                 //onPress={() => navigation.navigate('News')}
                 style={{ width: wp(35), height: "100%", borderRadius: wp(5) }}
@@ -2746,7 +2755,7 @@ export default function Dashboard({ route }) {
                 )}
               </View>
             )}
-
+</TouchableOpacity>
             <View style={{ justifyContent: "center", flex: 1 }}>
               <View
                 style={{
@@ -3071,7 +3080,8 @@ export default function Dashboard({ route }) {
         style={[
           styles.searchesDetails,
           {
-            backgroundColor: isSelected ? "#FACA4E" : "#F2F2F2",
+            // backgroundColor: isSelected ? "#FACA4E" : "#F2F2F2",
+            backgroundColor: isSelected ? "#FACA4E" : "#DDDDDD",
           },
         ]}
         onPress={() => {
@@ -3938,47 +3948,91 @@ export default function Dashboard({ route }) {
         <View style={{ marginTop: hp(1) }}></View>
 
         {/* // start of banner slider */}
-        <View
+    
+    <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#FACA4E" />
+      ) : adsData.length === 0 ? (
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
+        </View>
+      ) : (
+        <Carousel
+          data={adsData}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => Linking.openURL(item.banner_link)}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
+        {/* <View
           style={{
             alignItems: "center",
-            height: hp(14),
+            height: hp(16),
             marginLeft: 8,
             marginVertical: hp(2),
           }}
         >
-            {isLoading ? (
-        <ActivityIndicator size="large" color="#FACA4E" />
-      ) : adsData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#FACA4E" />
+          ) : adsData.length === 0 ? (
+           <View style={styles.TopBannerView}>
+            <Text style={{ fontWeight: "bold", fontSize: hp(2.1) }}>
+                        No Top Banner
+                      </Text>
+            </View>
+          ) : (
+            <Swiper autoplay={true} loop={true}>
+              {adsData.map((banner) => (
+                <View
+                  key={banner.id}
                   style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
+                    justifyContent: "center",
                   }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
-        </View>
+                >
+                  <Image
+                    source={{ uri: banner?.image }}
+                    style={{
+                      height: hp(15),
+                      width: "100%",
+                      borderWidth: 1,
+                      resizeMode: "contain",
+                      borderRadius: 10,
+                    }}
+                  />
+                </View>
+              ))}
+            </Swiper>
+          )}
+        </View> */}
         {/* ////slider end */}
 
         {/* //////category ///////////////////////////////////////////////////////////////////////////*/}
@@ -5470,48 +5524,8 @@ export default function Dashboard({ route }) {
           )}
         </View> */}
         {/* //////////////// ///////////////////////////////////////////////////////////////////////abouve for comments */}
-          {/* // start of banner slider */}
-          <View
-          style={{
-            alignItems: "center",
-            height: hp(14),
-            marginLeft: 8,
-            marginVertical: hp(2),
-          }}
-        >
-            {isLoading ? (
-        <ActivityIndicator size="large" color="#FACA4E" />
-      ) : adsinActiveData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
+        {/* // start of banner slider */}
       
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsinActiveData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
-        </View>
         {/* ////slider end */}
         {/* <View style={styles.bannerview}>
           <Image
@@ -5527,7 +5541,13 @@ export default function Dashboard({ route }) {
           />
         </View> */}
 
-        <View style={{ marginTop: hp(1), marginHorizontal: wp(8) }}>
+        <View
+          style={{
+            marginTop: hp(1),
+            marginHorizontal: wp(8),
+            marginVertical: hp(2),
+          }}
+        >
           <Text
             style={{ color: "#FACA4E", fontWeight: "bold", fontSize: hp(2.3) }}
           >
@@ -5557,9 +5577,154 @@ export default function Dashboard({ route }) {
 
         {/*  */}
 
-        {loading[1] && <ActivityIndicator size="large" color="#FACA4E" />}
+        <View>
+      {loading[1] && <ActivityIndicator size="large" color="#FACA4E" />}
+      {!loading[1] && (
+        <View style={{ marginVertical: hp(2), marginBottom: 10 }}>
+          {data[1] && data[1].length > 0 ? (
+            <FlatList
+              data={data[1]}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item, idx) => idx.toString()}
+              renderItem={({ item }) => {
+                return (
+                  <View
+                    style={{
+                      marginTop: hp(1.5),
+                      flexDirection: 'row',
+                      height: hp(18),
+                      marginBottom: 30,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('ViewVideo', { videoData: item, identifier: false })}
+                      style={{ width: wp(40), borderRadius: wp(5) }}
+                    >
+                      {item.image ? (
+                        <Image
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            zIndex: 1, // Ensure it's on top of other elements
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: wp(3),
+                            resizeMode: 'cover',
+                          }}
+                          source={{ uri: item.image }}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            zIndex: 1, // Ensure it's on top of other elements
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: wp(3),
+                            resizeMode: 'cover',
+                          }}
+                          source={appImages.videoPlaceHolder}
+                        />
+                      )}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: hp(18),
+                          left: 0,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          zIndex: 2, // Ensure it's on top
+                          width: '100%',
+                        }}
+                      >
+                        <Text
+                          ellipsizeMode="tail"
+                          numberOfLines={1}
+                          style={{
+                            fontSize: hp(2.5),
+                            fontFamily: 'Inter-Medium',
+                            color: 'black',
+                            fontWeight: '700',
+                          }}
+                        >
+                          {item.name}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <View style={{ justifyContent: 'flex-start', width: '50%', paddingTop: 2 }}>
+                      <Text
+                        ellipsizeMode="tail"
+                        numberOfLines={7}
+                        style={{
+                          fontSize: hp(1.5),
+                          marginLeft: wp(1),
+                          lineHeight: hp(2),
+                          fontFamily: 'Inter-Regular',
+                          color: '#000000',
+                        }}
+                      >
+                        {item.description}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              }}
+            />
+          ) : (
+            <View
+              style={{
+                marginTop: hp(1.5),
+                flexDirection: 'row',
+                height: hp(18),
+                marginBottom: 30,
+              }}
+            >
+              <TouchableOpacity
+                style={{ width: wp(40), borderRadius: wp(5)}}
+              >
+                <Image
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    zIndex: 1, // Ensure it's on top of other elements
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: wp(3),
+                    resizeMode: 'cover',
+                  }}
+                  source={appImages.videoPlaceHolder}
+                />
+              </TouchableOpacity>
+
+              <View style={{ justifyContent: 'flex-start', width: '50%', paddingTop: 2 }}>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={7}
+                  style={{
+                    fontSize: hp(1.5),
+                    marginLeft: wp(1),
+                    lineHeight: hp(2),
+                    fontFamily: 'Inter-Regular',
+                    color: '#000000',
+                  }}
+                >
+                  No Top Description
+                </Text>
+              </View>
+            </View>
+          )}
+        </View>
+      )}
+    </View>
+        {/* {loading[1] && <ActivityIndicator size="large" color="#FACA4E" />}
         {!loading[1] && data[1] && (
-          <View>
+          <View style={{ marginVertical: hp(2) , marginBottom:10, backgroundColor:'red' }}>
             <FlatList
               data={data[1]}
               showsVerticalScrollIndicator={false}
@@ -5656,7 +5821,7 @@ export default function Dashboard({ route }) {
               //   renderItem={({ item }) => <Text>{item.name}</Text>}
             />
           </View>
-        )}
+        )} */}
         {/* Top end */}
 
         {/* Treding Start */}
@@ -5664,11 +5829,11 @@ export default function Dashboard({ route }) {
         {/* treding End */}
         {loading[2] && <ActivityIndicator size="large" color="#FACA4E" />}
         {!loading[2] && data[2] && (
-          <View>
+          <View style={{marginBottom:10}}>
             <Text
               style={{
                 fontSize: hp(2.3),
-                marginLeft: wp(3),
+                marginLeft: wp(1),
                 fontFamily: "Inter",
                 color: "#4A4A4A",
                 fontWeight: "bold",
@@ -5688,11 +5853,11 @@ export default function Dashboard({ route }) {
         )}
         {loading[3] && <ActivityIndicator size="large" color="#FACA4E" />}
         {!loading[3] && data[3] && (
-          <View>
+          <View style={{marginBottom:10}}>
             <Text
               style={{
                 fontSize: hp(2.3),
-                marginLeft: wp(3),
+                marginLeft: wp(1),
                 fontFamily: "Inter",
                 color: "#4A4A4A",
                 fontWeight: "bold",
@@ -5713,11 +5878,11 @@ export default function Dashboard({ route }) {
 
         {loading[4] && <ActivityIndicator size="large" color="#FACA4E" />}
         {!loading[4] && data[4] && (
-          <View>
+          <View style={{marginBottom:10}}>
             <Text
               style={{
                 fontSize: hp(2.3),
-                marginLeft: wp(3),
+                marginLeft: wp(1),
                 fontFamily: "Inter",
                 color: "#4A4A4A",
                 fontWeight: "bold",
@@ -5738,11 +5903,11 @@ export default function Dashboard({ route }) {
 
         {loading[5] && <ActivityIndicator size="large" color="#FACA4E" />}
         {!loading[5] && data[5] && (
-          <View>
+      <View style={{marginBottom:10}}>
             <Text
               style={{
                 fontSize: hp(2.3),
-                marginLeft: wp(3),
+                marginLeft: wp(1),
                 fontFamily: "Inter",
                 color: "#4A4A4A",
                 fontWeight: "bold",
@@ -5763,48 +5928,91 @@ export default function Dashboard({ route }) {
 
         {/* //-------------------------------------------------------------\\ */}
 
-       {/* // start of banner slider */}
-       <View
+        {/* // start of banner slider */}
+        <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#FACA4E" />
+      ) : adsinActiveData.length === 0 ? (
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
+        </View>
+      ) : (
+        <Carousel
+          data={adsinActiveData}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => Linking.openURL(item.banner_link)}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
+        {/* <View
           style={{
             alignItems: "center",
-            height: hp(14),
+            height: hp(16),
             marginLeft: 8,
             marginVertical: hp(2),
           }}
         >
-            {isLoading ? (
-        <ActivityIndicator size="large" color="#FACA4E" />
-      ) : adsinActiveData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsinActiveData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#FACA4E" />
+          ) : adsinActiveData.length === 0 ? (
+           <View style={styles.TopBannerView}>
+            <Text style={{ fontWeight: "bold", fontSize: hp(2.1) }}>
+                        No Banner
+                      </Text>
+            </View>
+          ) : (
+            <Swiper autoplay={true} loop={true}>
+              {adsinActiveData.map((banner) => (
+                <View
+                  key={banner.id}
                   style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
+                    justifyContent: "center",
                   }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
-        </View>
+                >
+                  <Image
+                    source={{ uri: banner?.image }}
+                    style={{
+                      height: hp(15),
+                      width: "100%",
+                      borderWidth: 1,
+                      resizeMode: "contain",
+                      borderRadius: 10,
+                    }}
+                  />
+                </View>
+              ))}
+            </Swiper>
+          )}
+        </View> */}
         {/* ////slider end */}
         {/* Disc */}
 
@@ -5846,46 +6054,49 @@ export default function Dashboard({ route }) {
 
         {/* // start of banner slider */}
         <View
-          style={{
-            alignItems: "center",
-            height: hp(14),
-            marginLeft: 8,
-            marginVertical: hp(2),
-          }}
-        >
-            {isLoading ? (
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
         <ActivityIndicator size="large" color="#FACA4E" />
       ) : adsinActiveData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsinActiveData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
         </View>
+      ) : (
+        <Carousel
+          data={adsinActiveData}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => Linking.openURL(item.banner_link)}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
         {/* ////slider end */}
 
         <Text
@@ -6027,9 +6238,49 @@ export default function Dashboard({ route }) {
         )}
 
         {/* treding End */}
-        {loading[10] && <ActivityIndicator size="large" color="#FACA4E" />}
+        <View style={{ marginTop: hp(2), height: hp(23) }}>
+          <Text
+            style={{
+              fontSize: hp(2.3),
+              fontFamily: "Inter",
+              color: "#4A4A4A",
+              marginLeft: wp(1),
+              fontWeight: "bold",
+            }}
+          >
+             Trending
+          </Text>
+
+          <View style={{ marginTop: hp(1), height: "100%" }}>
+            {loading[10] ? (
+              <ActivityIndicator size="large" color="#FACA4E" />
+            ) : data[10]?.length === 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: hp(2.1) }}>
+                  No data available
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={data[10]}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                keyExtractor={(item, idx) => idx.toString()}
+                renderItem={({ item }) => renderAvailableAppsPics(item)}
+              />
+            )}
+          </View>
+        </View>
+        {/* {loading[10] && <ActivityIndicator size="large" color="#FACA4E" />}
         {!loading[10] && data[10] && (
-          <View>
+         <View style={{marginBottom:10, marginTop:10}}>
             <Text
               style={{
                 fontSize: hp(2.3),
@@ -6050,60 +6301,138 @@ export default function Dashboard({ route }) {
               renderItem={({ item }) => renderAvailableAppsPics(item)}
             />
           </View>
-        )}
-        {loading[11] && <ActivityIndicator size="large" color="#FACA4E" />}
-        {!loading[11] && data[11] && (
-          <View>
-            <Text
-              style={{
-                fontSize: hp(2.3),
-                marginLeft: wp(3),
-                fontFamily: "Inter",
-                color: "#4A4A4A",
-                fontWeight: "bold",
-              }}
-            >
-              Latest Video
-            </Text>
-            <FlatList
-              data={data[11]}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              keyExtractor={(item, idx) => idx.toString()}
-              renderItem={({ item }) => renderAvailableAppsPics(item)}
-            />
-          </View>
-        )}
+        )} */}
 
-        {loading[12] && <ActivityIndicator size="large" color="#FACA4E" />}
-        {!loading[12] && data[12] && (
-          <View>
-            <Text
-              style={{
-                fontSize: hp(2.3),
-                marginLeft: wp(3),
-                fontFamily: "Inter",
-                color: "#4A4A4A",
-                fontWeight: "bold",
-              }}
-            >
-              Most Viewed
-            </Text>
-            <FlatList
-              data={data[12]}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              keyExtractor={(item, idx) => idx.toString()}
-              renderItem={({ item }) => renderAvailableAppsPics(item)}
-            />
-          </View>
-        )}
+        {/* ////////// Latest */}
+        <View style={{ marginTop: hp(2), height: hp(23) }}>
+          <Text
+            style={{
+              fontSize: hp(2.3),
+              fontFamily: "Inter",
+              color: "#4A4A4A",
+              marginLeft: wp(1),
+              fontWeight: "bold",
+            }}
+          >
+             Latest Video
+          </Text>
 
-        {loading[13] && <ActivityIndicator size="large" color="#FACA4E" />}
+          <View style={{ marginTop: hp(1), height: "100%" }}>
+            {loading[11] ? (
+              <ActivityIndicator size="large" color="#FACA4E" />
+            ) : data[11]?.length === 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: hp(2.1) }}>
+                  No data available
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={data[11]}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                keyExtractor={(item, idx) => idx.toString()}
+                renderItem={({ item }) => renderAvailableAppsPics(item)}
+              />
+            )}
+          </View>
+        </View>
+
+  {/* ////////// Most Viewed */}
+  <View style={{ marginTop: hp(2), height: hp(23) }}>
+          <Text
+            style={{
+              fontSize: hp(2.3),
+              fontFamily: "Inter",
+              color: "#4A4A4A",
+              marginLeft: wp(1),
+              fontWeight: "bold",
+            }}
+          >
+             Most Viewed
+          </Text>
+
+          <View style={{ marginTop: hp(1), height: "100%" }}>
+            {loading[12] ? (
+              <ActivityIndicator size="large" color="#FACA4E" />
+            ) : data[12]?.length === 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: hp(2.1) }}>
+                  No data available
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={data[12]}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                keyExtractor={(item, idx) => idx.toString()}
+                renderItem={({ item }) => renderAvailableAppsPics(item)}
+              />
+            )}
+          </View>
+        </View>
+
+        {/* ///  Most Commented */}
+  
+  {/* ////////// Most Viewed */}
+  <View style={{ marginTop: hp(2), height: hp(23) }}>
+          <Text
+            style={{
+              fontSize: hp(2.3),
+              fontFamily: "Inter",
+              color: "#4A4A4A",
+              marginLeft: wp(1),
+              fontWeight: "bold",
+            }}
+          >
+             Most Commented
+          </Text>
+
+          <View style={{ marginTop: hp(1), height: "100%" }}>
+            {loading[13] ? (
+              <ActivityIndicator size="large" color="#FACA4E" />
+            ) : data[13]?.length === 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: hp(2.1) }}>
+                  No data available
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={data[13]}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                keyExtractor={(item, idx) => idx.toString()}
+                renderItem={({ item }) => renderAvailableAppsPics(item)}
+              />
+            )}
+          </View>
+        </View>
+        {/* {loading[13] && <ActivityIndicator size="large" color="#FACA4E" />}
         {!loading[13] && data[13] && (
-          <View>
+     <View style={{marginBottom:10}}>
             <Text
               style={{
                 fontSize: hp(2.3),
@@ -6124,7 +6453,7 @@ export default function Dashboard({ route }) {
               renderItem={({ item }) => renderAvailableAppsPics(item)}
             />
           </View>
-        )}
+        )} */}
 
         {/* //-------------------------------------------------------------\\ */}
 
@@ -6132,46 +6461,49 @@ export default function Dashboard({ route }) {
 
         {/* // start of banner slider */}
         <View
-          style={{
-            alignItems: "center",
-            height: hp(14),
-            marginLeft: 8,
-            marginVertical: hp(2),
-          }}
-        >
-            {isLoading ? (
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
         <ActivityIndicator size="large" color="#FACA4E" />
       ) : adsinActiveData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsinActiveData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
         </View>
+      ) : (
+        <Carousel
+          data={adsinActiveData}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => Linking.openURL(item.banner_link)}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
         {/* ////slider end */}
 
         {/* Market Zone */}
@@ -6472,48 +6804,51 @@ export default function Dashboard({ route }) {
 
         {/* top market end */}
 
-            {/* // start of banner slider */}
-            <View
-          style={{
-            alignItems: "center",
-            height: hp(14),
-            marginLeft: 8,
-            marginVertical: hp(2),
-          }}
-        >
-            {isLoading ? (
+        {/* // start of banner slider */}
+        <View
+      style={{
+        alignItems: 'center',
+        height: hp(16),
+        // marginLeft: 8,
+        marginVertical: hp(2),
+      }}
+    >
+      {isLoading ? (
         <ActivityIndicator size="large" color="#FACA4E" />
       ) : adsinActiveData.length === 0 ? (
-        <Image
-          source={require('../../../assets/images/BannerAds.png')} // Replace with your default image URL
-          style={styles.defaultImage}
-        />
-      
-       ) : (
-          <Swiper autoplay={true} loop={true}>
-            {adsinActiveData.map((banner) => (
-              <View
-                key={banner.id}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                   source={{ uri: banner?.image }}
-                  style={{
-                    height: hp(13),
-                    width: wp(83),
-                    borderWidth: 1,
-                    resizeMode:'contain',
-                    borderRadius: 10,
-                  }}
-                />
-              </View>
-            ))}
-          </Swiper>
-           )
-          }
+        <View style={styles.TopBannerView}>
+          <Text style={{ fontWeight: 'bold', fontSize: hp(2.1) }}>No Top Banner</Text>
         </View>
+      ) : (
+        <Carousel
+          data={adsinActiveData}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => Linking.openURL(item.banner_link)}
+              style={{
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: item?.image }}
+                style={{
+                  height: hp(15),
+                  width: '100%',
+                  borderWidth: 1,
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.9}
+          loop={true}
+          autoplay={true}
+        />
+      )}
+    </View>
         {/* ////slider end */}
       </ScrollView>
 
@@ -7454,6 +7789,11 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: wp(2),
     paddingHorizontal: wp(5),
+  },
+  TopBannerView:{
+    height:'100%', width:'100%', borderWidth:1, borderColor:'gray',  borderRadius: 10, flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   containerBlur: {
     flex: 1,

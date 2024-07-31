@@ -9,6 +9,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Modal
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import Back from '../../../assets/svg/back.svg';
@@ -99,6 +100,15 @@ export default function UpdateProfile({navigation}) {
 
   const [authToken, setAuthToken] = useState([]);
 
+  const [userimage, setUserImage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const handleImagePress = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
   //------------------------------------\\
 
   useEffect(() => {
@@ -166,7 +176,10 @@ export default function UpdateProfile({navigation}) {
       );
 
       const result = await response.json();
-      //console.log('Resultings', result.user);
+      console.log('Resultings', result.user);
+      
+      // setUserName(result.user.image);
+      setUserImage(result?.user?.image || "");
       setUserName(result.user.username);
       setEmail(result.user.email);
       setLoading(false);
@@ -459,8 +472,32 @@ export default function UpdateProfile({navigation}) {
         showsVerticalScrollIndicator={false}
         style={styles.container}>
         <View style={{alignItems: 'center', marginTop: hp(5)}}>
-          <TouchableOpacity style={styles.circleBox}>
-            {imageUri == null ? (
+          <TouchableOpacity style={styles.circleBox} onPress={handleImagePress}>
+          {userimage ? (
+             <Image
+             style={{
+               flex: 1,
+               width: '100%',
+               height: '100%',
+               borderRadius: wp(25) / 2, // Half of the width (25/2)
+               resizeMode: 'contain',
+             }}
+             source={{uri: userimage}}
+           />
+          ) : (
+            <Image
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: wp(25) / 2, // Half of the width (25/2)
+                  resizeMode: 'contain',
+                }}
+                source={{uri: imageUri}}
+              />
+          )}
+
+            {/* {imageUri == null ? (
               <User width={30} height={30} />
             ) : (
               <Image
@@ -473,7 +510,7 @@ export default function UpdateProfile({navigation}) {
                 }}
                 source={{uri: imageUri}}
               />
-            )}
+            )} */}
           </TouchableOpacity>
         </View>
 
@@ -527,7 +564,7 @@ export default function UpdateProfile({navigation}) {
           You can't edit your email address
         </Text>
 
-        <View style={{marginTop: hp(18)}}>
+        <View style={{marginTop: hp(18),alignItems:'center'}}>
           <CustomButton
             title="Update"
             customClick={() => {
@@ -542,6 +579,22 @@ export default function UpdateProfile({navigation}) {
             //style={{width: wp(59)}}
           />
         </View>
+
+        <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity style={styles.modalBackground} onPress={handleCloseModal}>
+            <Image
+              style={styles.modalImage}
+              source={{ uri: userimage || imageUri }}
+            />
+          </TouchableOpacity>
+        </View>
+      </Modal>
       </ScrollView>
 
       <RBSheet
@@ -755,7 +808,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#FACA4E',
     borderRadius: 25,
-    width: 150,
+    width: '80%',
     marginTop: hp(2),
     marginBottom: '5%',
   },
@@ -768,5 +821,22 @@ const styles = StyleSheet.create({
     borderRadius: wp(50),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  modalBackground: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: '90%',
+    height: '90%',
+    resizeMode: 'contain',
   },
 });
